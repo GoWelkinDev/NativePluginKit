@@ -4,7 +4,7 @@ VisualStudioVersion = 18.8.12009.203
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnknownSite0.Plugins", "UnknownSite0.Plugins\UnknownSite0.Plugins.csproj", "{5067ECF6-A942-438C-BFF5-DF9A1F41D08A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnknownSite0.Examples", "UnknownSite0.Examples\UnknownSite0.Examples.csproj", "{7888767D-10E3-473E-BB69-5813243E19D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "UnknownSite0.Examples\HelloWorldPlugin\HelloWorldPlugin.csproj", "{7888767D-10E3-473E-BB69-5813243E19D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,6 +9,8 @@ namespace UnknownSite0.Plugins.Loader
     /// </summary>
     public unsafe class PluginLoader
     {
+        private readonly List<PluginHandle> _plugins = new();
+
         /// <summary>
         /// 主程序暴露给插件的 API 函数表
         /// </summary>
@@ -20,14 +22,21 @@ namespace UnknownSite0.Plugins.Loader
         public Action<string> LogWriter { get; }
 
         /// <summary>
+        /// 主程序的 API 版本，用于与插件所需版本比较
+        /// </summary>
+        public Version CurrentApiVersion { get; }
+
+        /// <summary>
         /// 初始化 <see cref="PluginLoader"/> 类的新实例
         /// </summary>
         /// <param name="logAction">用于接收日志消息的委托</param>
         /// <param name="apiTable">要传递给插件的主程序 API 函数表</param>
-        public PluginLoader(Action<string> logAction, HostApiTable apiTable)
+        /// <param name="apiVersion">主程序的 API 版本</param>
+        public PluginLoader(Action<string> logAction, HostApiTable apiTable, Version apiVersion)
         {
             LogWriter = logAction;
             Api = apiTable;
+            CurrentApiVersion = apiVersion;
         }
 
         /// <summary>
@@ -48,6 +57,36 @@ namespace UnknownSite0.Plugins.Loader
                 return false;
             }
 
+            // 获取 PluginInfo
+            IntPtr infoFuncPtr = NativeMethods.GetProcAddress(hModule, "GetPluginInfo");
+            if (infoFuncPtr == IntPtr.Zero)
+            {
+                LogWriter($"GetPluginInfo not found in {Path.GetFileName(dllPath)}. Plugin rejected.");
+                NativeMethods.FreeLibrary(hModule);
+                return false;
+            }
+
+            var infoFunc = (delegate* unmanaged<IntPtr>)infoFuncPtr;
+            IntPtr pluginInfoPtr = infoFunc();
+            if (pluginInfoPtr == IntPtr.Zero)
+            {
+                LogWriter($"GetPluginInfo returned null in {Path.GetFileName(dllPath)}. Plugin rejected.");
+                NativeMethods.FreeLibrary(hModule);
+                return false;
+            }
+
+            PluginInfo info = Marshal.PtrToStructure<PluginInfo>(pluginInfoPtr);
+
+            // 版本兼容性检查
+            Version requiredApi = info.GetRequiredApiVersion();
+            if (requiredApi.Major != CurrentApiVersion.Major || requiredApi.Minor > CurrentApiVersion.Minor)
+            {
+                LogWriter($"Plugin '{info.GetName()}' requires API v{requiredApi}, but host provides v{CurrentApiVersion}. Plugin rejected.");
+                NativeMethods.FreeLibrary(hModule);
+                return false;
+            }
+
+            // 获取 OnInit
             IntPtr initPtr = NativeMethods.GetProcAddress(hModule, "OnInit");
             if (initPtr == IntPtr.Zero)
             {
@@ -56,14 +95,37 @@ namespace UnknownSite0.Plugins.Loader
                 return false;
             }
 
+            LogWriter($"Loading plugin: {info.GetName()} v{info.GetVersion()} by {info.GetAuthor()}");
+
             var initFunc = (delegate* unmanaged<IntPtr, void>)initPtr;
             // 将结构体指针传递给插件
             IntPtr apiPtr = Marshal.AllocHGlobal(Marshal.SizeOf<HostApiTable>());
             Marshal.StructureToPtr(Api, apiPtr, false);
 
-            initFunc(apiPtr);
+            try
+            {
+                initFunc(apiPtr);
+            }
+            catch (Exception ex)
+            {
+                LogWriter($"Exception during OnInit of '{info.GetName()}': {ex.Message}");
+                Marshal.FreeHGlobal(apiPtr);
+                NativeMethods.FreeLibrary(hModule);
+                return false;
+            }
+            finally
+            {
+                // apiPtr 在插件内部已复制，可安全释放
+                Marshal.FreeHGlobal(apiPtr);
+            }
 
-            // 不释放 hModule，插件在整个生命周期内需要保持加载
+            _plugins.Add(new PluginHandle
+            {
+                DllPath = dllPath,
+                ModuleHandle = hModule,
+                Info = info
+            });
+
             return true;
         }
 
@@ -85,11 +147,44 @@ namespace UnknownSite0.Plugins.Loader
 
             foreach (string dllPath in dllFiles)
             {
-                string fileName = Path.GetFileName(dllPath);
-                LogWriter($"Loading plugin: {fileName}");
                 LoadPlugin(dllPath);
             }
         }
+
+        /// <summary>
+        /// 卸载所有已加载的插件并释放库句柄
+        /// </summary>
+        public void UnloadAll()
+        {
+            foreach (var handle in _plugins)
+            {
+                IntPtr stopPtr = NativeMethods.GetProcAddress(handle.ModuleHandle, "OnStop");
+                if (stopPtr != IntPtr.Zero)
+                {
+                    var stopFunc = (delegate* unmanaged<void>)stopPtr;
+                    try
+                    {
+                        stopFunc();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogWriter($"Exception during OnStop of '{handle.Info.GetName()}': {ex.Message}");
+                    }
+                }
+
+                NativeMethods.FreeLibrary(handle.ModuleHandle);
+                LogWriter($"Unloaded plugin: {handle.Info.GetName()}");
+            }
+
+            _plugins.Clear();
+        }
+    }
+
+    internal class PluginHandle
+    {
+        public string DllPath = string.Empty;
+        public IntPtr ModuleHandle;
+        public PluginInfo Info;
     }
 
     /// <summary>

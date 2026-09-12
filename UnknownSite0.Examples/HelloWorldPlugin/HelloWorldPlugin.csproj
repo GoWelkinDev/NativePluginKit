@@ -13,7 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UnknownSite0.Plugins\UnknownSite0.Plugins.csproj" />
+    <ProjectReference Include="..\..\UnknownSite0.Plugins\UnknownSite0.Plugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<UnmanagedEntryPointsAssembly Include="UnknownSite0.Plugins" />
   </ItemGroup>
 
 </Project>

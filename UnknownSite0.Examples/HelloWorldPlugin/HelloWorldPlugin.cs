@@ -1,16 +1,33 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using UnknownSite0.Plugins.Features.Logger;
 using UnknownSite0.Plugins.Loader.Plugins;
 
-namespace UnknownSite0.Examples
+namespace HelloWorldPlugin
 {
     /// <summary>
     /// 示例插件，继承 <see cref="Plugin"/> 并实现基本功能
     /// 该插件在启动时输出一条日志消息
     /// </summary>
-    public class HelloWorldPlugin : Plugin
+    public partial class HelloWorldPlugin : Plugin
     {
         private static HelloWorldPlugin? _instance;
+
+        public override string Name => "HelloWorldPlugin";
+
+        public override string Description => "A simple hello world plugin for demonstration purposes.";
+
+        public override string Author => "Your Name";
+        public override Version RequiredApiVersion => new Version(1, 0, 0);
+
+#pragma warning disable CA2255
+        [ModuleInitializer]
+#pragma warning restore CA2255
+        public static void Init()
+        {
+            
+            SetPluginInfo(new HelloWorldPlugin());
+        }
 
         /// <summary>
         /// 插件启动时调用的方法，输出欢迎日志
@@ -34,6 +51,11 @@ namespace UnknownSite0.Examples
         {
             _instance = new HelloWorldPlugin();
             Initialize(hostApiTablePtr, _instance);
+        }
+
+        public override void OnStop()
+        {
+            _instance = null;
         }
     }
 }
