@@ -20,17 +20,17 @@ namespace ExampleClient
         // 构建 API 函数表
         public static HostApiTable CreateApiTable()
         {
-            HostApiBridgeBuilder.TransitionToSceneDelegate transition = (pathPtr, fadeOut) =>
+            static void transition(nint pathPtr, bool fadeOut)
             {
                 string? scenePath = Marshal.PtrToStringUTF8(pathPtr);
                 if (string.IsNullOrEmpty(scenePath)) return;
-            };
+            }
 
-            HostApiBridgeBuilder.PrintLogDelegate print = (msgPtr) =>
+            static void print(nint msgPtr)
             {
                 string? msg = Marshal.PtrToStringUTF8(msgPtr);
                 if (!string.IsNullOrEmpty(msg)) Console.WriteLine(msg);
-            };
+            }
 
             return HostApiBridgeBuilder.Create(transition, print);
         }
