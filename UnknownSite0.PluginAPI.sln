@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "Unknown
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleClient", "UnknownSite0.Examples\Client\ExampleClient.csproj", "{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnknownSite0.Plugins.SourceGenerators", "UnknownSite0.Plugins.SourceGenerators\UnknownSite0.Plugins.SourceGenerators.csproj", "{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
