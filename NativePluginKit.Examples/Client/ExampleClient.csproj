@@ -3,18 +3,17 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+	<OutputType>Exe</OutputType>
     <Nullable>enable</Nullable>
 	<PublishAot>true</PublishAot>
 	<InvariantGlobalization>true</InvariantGlobalization>
 	<StripSymbols>true</StripSymbols>
 	<IlcOptimizationPreference>Speed</IlcOptimizationPreference>
-	<NativeLib>Shared</NativeLib>
 	<IlcExportUnmanagedEntrypoints>true</IlcExportUnmanagedEntrypoints>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UnknownSite0.Plugins\NativePluginKit.csproj" />
-	<ProjectReference Include="..\..\UnknownSite0.Plugins.SourceGenerators\NativePluginKit.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\NativePluginKit\NativePluginKit.csproj" />
   </ItemGroup>
 
   <ItemGroup>
