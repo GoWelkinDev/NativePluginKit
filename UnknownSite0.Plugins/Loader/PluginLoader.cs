@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
-using UnknownSite0.Plugins.Loader.Constants;
+using NativePluginKit.Loader.Constants;
 
-namespace UnknownSite0.Plugins.Loader
+namespace NativePluginKit.Loader
 {
     /// <summary>
     /// 负责加载和管理插件的核心类

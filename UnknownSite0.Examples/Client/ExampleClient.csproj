@@ -13,11 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UnknownSite0.Plugins\UnknownSite0.Plugins.csproj" />
+    <ProjectReference Include="..\..\UnknownSite0.Plugins\NativePluginKit.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-	<UnmanagedEntryPointsAssembly Include="UnknownSite0.Plugins" />
+	<UnmanagedEntryPointsAssembly Include="NativePluginKit" />
   </ItemGroup>
 
 </Project>

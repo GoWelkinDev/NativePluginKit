@@ -13,12 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UnknownSite0.Plugins\UnknownSite0.Plugins.csproj" />
-	<ProjectReference Include="..\..\UnknownSite0.Plugins.SourceGenerators\UnknownSite0.Plugins.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\UnknownSite0.Plugins\NativePluginKit.csproj" />
+	<ProjectReference Include="..\..\UnknownSite0.Plugins.SourceGenerators\NativePluginKit.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
-	<UnmanagedEntryPointsAssembly Include="UnknownSite0.Plugins" />
+	<UnmanagedEntryPointsAssembly Include="NativePluginKit" />
   </ItemGroup>
 
 </Project>

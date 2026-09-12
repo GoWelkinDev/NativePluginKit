@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace UnknownSite0.Plugins.Loader.Constants
+namespace NativePluginKit.Loader.Constants
 {
     /// <summary>
     /// 用于构建 <see cref="HostApiTable"/> 的静态工厂类

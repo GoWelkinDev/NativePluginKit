@@ -1,5 +1,5 @@
-using UnknownSite0.Plugins.Features.Logger;
-using UnknownSite0.Plugins.Loader.Plugins;
+using NativePluginKit.Features.Logger;
+using NativePluginKit.Loader.Plugins;
 
 namespace HelloWorldPlugin
 {

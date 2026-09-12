@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
-using UnknownSite0.Plugins.Loader;
-using UnknownSite0.Plugins.Loader.Constants;
+using NativePluginKit.Loader;
+using NativePluginKit.Loader.Constants;
 
 namespace ExampleClient
 {

@@ -6,12 +6,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace UnknownSite0.Plugins.SourceGenerators
+namespace NativePluginKit.SourceGenerators
 {
     [Generator(LanguageNames.CSharp)]
     public class PluginGenerator : IIncrementalGenerator
     {
-        private const string PluginBaseType = "UnknownSite0.Plugins.Loader.Plugins.Plugin";
+        private const string PluginBaseType = "NativePluginKit.Loader.Plugins.Plugin";
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
@@ -88,7 +88,7 @@ namespace UnknownSite0.Plugins.SourceGenerators
                 sb.AppendLine("using System;");
                 sb.AppendLine("using System.Runtime.CompilerServices;");
                 sb.AppendLine("using System.Runtime.InteropServices;");
-                sb.AppendLine("using UnknownSite0.Plugins.Loader.Plugins;");
+                sb.AppendLine("using NativePluginKit.Loader.Plugins;");
                 sb.AppendLine();
 
                 if (!string.IsNullOrEmpty(p.Namespace))

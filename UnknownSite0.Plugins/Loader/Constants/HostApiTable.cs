@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace UnknownSite0.Plugins.Loader.Constants
+namespace NativePluginKit.Loader.Constants
 {
     /// <summary>
     /// 主程序暴露给插件的函数指针表，包含插件可调用的宿主功能

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace UnknownSite0.Plugins.Loader.Constants
+namespace NativePluginKit.Loader.Constants
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct PluginInfo

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using UnknownSite0.Plugins.Loader.Plugins;
+using NativePluginKit.Loader.Plugins;
 
-namespace UnknownSite0.Plugins.Features.FMOD
+namespace NativePluginKit.Features.FMOD
 {
     /// <summary>
     /// 提供场景切换功能，调用宿主API的 <c>TransitionToScene</c> 函数

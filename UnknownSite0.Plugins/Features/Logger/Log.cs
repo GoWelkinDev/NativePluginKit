@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
-using UnknownSite0.Plugins.Loader.Plugins;
+using NativePluginKit.Loader.Plugins;
 
-namespace UnknownSite0.Plugins.Features.Logger
+namespace NativePluginKit.Features.Logger
 {
     /// <summary>
     /// 提供插件端日志输出功能，调用宿主API的 <c>PrintLog</c> 函数

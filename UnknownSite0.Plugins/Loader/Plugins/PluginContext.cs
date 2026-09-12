@@ -1,6 +1,6 @@
-using UnknownSite0.Plugins.Loader.Constants;
+using NativePluginKit.Loader.Constants;
 
-namespace UnknownSite0.Plugins.Loader.Plugins
+namespace NativePluginKit.Loader.Plugins
 {
     /// <summary>
     /// 提供插件运行时的全局上下文，用于访问宿主 API 函数表

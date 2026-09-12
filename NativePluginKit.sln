@@ -2,13 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.8.12009.203
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnknownSite0.Plugins", "UnknownSite0.Plugins\UnknownSite0.Plugins.csproj", "{5067ECF6-A942-438C-BFF5-DF9A1F41D08A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativePluginKit", "UnknownSite0.Plugins\NativePluginKit.csproj", "{5067ECF6-A942-438C-BFF5-DF9A1F41D08A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "UnknownSite0.Examples\HelloWorldPlugin\HelloWorldPlugin.csproj", "{7888767D-10E3-473E-BB69-5813243E19D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleClient", "UnknownSite0.Examples\Client\ExampleClient.csproj", "{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnknownSite0.Plugins.SourceGenerators", "UnknownSite0.Plugins.SourceGenerators\UnknownSite0.Plugins.SourceGenerators.csproj", "{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativePluginKit.SourceGenerators", "UnknownSite0.Plugins.SourceGenerators\NativePluginKit.SourceGenerators.csproj", "{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
