@@ -12,6 +12,7 @@ namespace ExampleClient
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             PluginLoader.LoadPluginsFromDirectory(Path.Combine(Environment.CurrentDirectory, "plugins"));
+            PluginLoader.UnloadAll();
         }
     }
 
