@@ -59,7 +59,9 @@ namespace NativePluginKit.Features.Events
 
                 if (slot.Handlers.Count == 0 && slot.Registered)
                 {
-                    EventBridge.Unregister((int)type, DispatchPtr);
+                    // 现在传三参数
+                    EventBridge.Unregister((int)type, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
+
                     if (slot.Handle.IsAllocated) slot.Handle.Free();
                     slot.Registered = false;
                 }

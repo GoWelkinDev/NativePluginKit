@@ -43,15 +43,24 @@
         /// <summary>
         /// 由插件通过 HostApi 调用
         /// </summary>
-        public static bool Unregister(int eventType, IntPtr callback)
+        public static bool Unregister(int eventType, IntPtr callback, IntPtr userData)
         {
+            if (callback == IntPtr.Zero) return false;
+
             var type = (EventType)eventType;
             lock (_lock)
             {
                 if (!_subs.TryGetValue(type, out var list)) return false;
+
                 for (int i = list.Count - 1; i >= 0; i--)
-                    if (list[i].Callback == callback) list.RemoveAt(i);
-                return true;
+                {
+                    if (list[i].Callback == callback && list[i].UserData == userData)
+                    {
+                        list.RemoveAt(i);
+                        return true;
+                    }
+                }
+                return false;
             }
         }
 

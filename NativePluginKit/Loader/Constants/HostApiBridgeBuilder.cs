@@ -29,8 +29,8 @@ namespace NativePluginKit.Loader.Constants
         public delegate double GetDoubleDelegate();
 
         // ====== 事件 ======
-        public delegate int RegisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
-        public delegate int UnregisterEventDelegate(int eventType, IntPtr callback);
+        public delegate bool RegisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
+        public delegate bool UnregisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
 
         // ====== 剧情 ======
         public delegate int GetBoolDelegate();
