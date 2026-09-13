@@ -17,4 +17,8 @@
 	<DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(DefineConstants);LINUX</DefineConstants>
 	<DefineConstants Condition="$([MSBuild]::IsOSPlatform('macOS'))">$(DefineConstants);MACOS</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\NativePluginKit.SourceGenerators\NativePluginKit.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
 </Project>
