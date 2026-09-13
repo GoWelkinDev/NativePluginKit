@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativePluginKit", "NativePl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "NativePluginKit.Examples\HelloWorldPlugin\HelloWorldPlugin.csproj", "{7888767D-10E3-473E-BB69-5813243E19D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleClient", "NativePluginKit.Examples\Client\ExampleClient.csproj", "{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativePluginKit.SourceGenerators", "NativePluginKit.SourceGenerators\NativePluginKit.SourceGenerators.csproj", "{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}"
 EndProject
 Global
@@ -24,10 +22,6 @@ Global
 		{7888767D-10E3-473E-BB69-5813243E19D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7888767D-10E3-473E-BB69-5813243E19D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7888767D-10E3-473E-BB69-5813243E19D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04ABEF2D-2D7B-A3CC-BDE2-AFD41D6034FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
