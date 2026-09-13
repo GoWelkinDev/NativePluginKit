@@ -143,7 +143,15 @@ namespace NativePluginKit.Loader
                 return;
             }
 
-            string[] dllFiles = Directory.GetFiles(directoryPath, "*.dll");
+#if WINDOWS
+            const string pattern = "*.dll";
+#elif LINUX
+            const string pattern = "*.so";
+#elif MACOS
+            const string pattern = "*.dylib";
+#endif
+
+            string[] dllFiles = Directory.GetFiles(directoryPath, pattern);
 
             foreach (string dllPath in dllFiles)
             {
@@ -192,14 +200,36 @@ namespace NativePluginKit.Loader
     /// </summary>
     internal partial class NativeMethods
     {
+#if WINDOWS
         [LibraryImport("kernel32.dll", EntryPoint = "LoadLibraryW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
-        public static partial IntPtr LoadLibrary(string lpFileName);
+        private static partial IntPtr LoadLibraryW(string lpFileName);
 
         [LibraryImport("kernel32.dll", EntryPoint = "GetProcAddress", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
-        public static partial IntPtr GetProcAddress(IntPtr hModule, string procName);
+        private static partial IntPtr GetProcAddressRaw(IntPtr hModule, string procName);
 
         [LibraryImport("kernel32.dll", EntryPoint = "FreeLibrary", SetLastError = false)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool FreeLibrary(IntPtr hModule);
+        private static partial bool FreeLibraryRaw(IntPtr hModule);
+
+        public static IntPtr LoadLibrary(string name) => LoadLibraryW(name);
+        public static IntPtr GetProcAddress(IntPtr h, string name) => GetProcAddressRaw(h, name);
+        public static bool FreeLibrary(IntPtr h) => FreeLibraryRaw(h);
+#elif LINUX || MACOS
+    private const int RTLD_NOW = 2;
+    private const int RTLD_LOCAL = 0;
+
+    [LibraryImport("libdl.so.2", EntryPoint = "dlopen", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
+    private static partial IntPtr dlopen(string fileName, int flags);
+
+    [LibraryImport("libdl.so.2", EntryPoint = "dlsym", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
+    private static partial IntPtr dlsym(IntPtr handle, string symbol);
+
+    [LibraryImport("libdl.so.2", EntryPoint = "dlclose", SetLastError = true)]
+    private static partial int dlclose(IntPtr handle);
+
+    public static IntPtr LoadLibrary(string name) => dlopen(name, RTLD_NOW | RTLD_LOCAL);
+    public static IntPtr GetProcAddress(IntPtr h, string name) => dlsym(h, name);
+    public static bool FreeLibrary(IntPtr h) => dlclose(h) == 0;
+#endif
     }
 }

@@ -12,4 +12,9 @@
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup>
+	<DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);WINDOWS</DefineConstants>
+	<DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(DefineConstants);LINUX</DefineConstants>
+	<DefineConstants Condition="$([MSBuild]::IsOSPlatform('macOS'))">$(DefineConstants);MACOS</DefineConstants>
+  </PropertyGroup>
 </Project>
