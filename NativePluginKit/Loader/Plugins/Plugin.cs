@@ -89,6 +89,7 @@ namespace NativePluginKit.Loader.Plugins
         {
             _api = Marshal.PtrToStructure<HostApiTable>(hostApiTablePtr);
             PluginContext.CurrentApi = _api;
+            PluginContext.PluginName = instance.Name;
 
             instance.OnStart();
         }

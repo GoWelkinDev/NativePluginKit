@@ -12,5 +12,10 @@ namespace NativePluginKit.Loader.Plugins
         /// 该属性在插件初始化时被设置
         /// </summary>
         public static HostApiTable CurrentApi { get; internal set; }
+
+        /// <summary>
+        /// 当前插件名称
+        /// </summary>
+        public static string PluginName { get; internal set; } = "Unknown";
     }
 }
