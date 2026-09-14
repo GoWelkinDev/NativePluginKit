@@ -37,6 +37,21 @@ namespace NativePluginKit.Events
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct TimelineSignalEvent
+    {
+        public EventHeader Header;
+        public IntPtr SignalNamePtr;   // UTF-8
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct BattleEvent
+    {
+        public EventHeader Header;
+        /// <summary>0 = 开始 / 失败，1 = 胜利</summary>
+        public int Victory;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct BattleMessageEvent
     {
         public EventHeader Header;
