@@ -1,5 +1,6 @@
 ﻿using NativePluginKit.Events;
 using NativePluginKit.Features.Logger;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace NativePluginKit.Features.Events
@@ -14,11 +15,15 @@ namespace NativePluginKit.Features.Events
     /// </remarks>
     public static class EventBus
     {
+        private const DynamicallyAccessedMemberTypes StructRequirements =
+            DynamicallyAccessedMemberTypes.PublicConstructors |
+            DynamicallyAccessedMemberTypes.NonPublicConstructors;
+
         /// <summary>订阅指定类型的事件</summary>
         /// <typeparam name="T">事件数据结构体（unmanaged）</typeparam>
         /// <param name="type">事件类型</param>
         /// <param name="handler">事件回调，在主线程调用</param>
-        public static void On<T>(EventType type, Action<T> handler) where T : unmanaged
+        public static void On<[DynamicallyAccessedMembers(StructRequirements)] T>(EventType type, Action<T> handler) where T : unmanaged
         {
             if (handler is null) return;
 
@@ -47,7 +52,7 @@ namespace NativePluginKit.Features.Events
         /// <summary>
         /// 取消订阅
         /// </summary>
-        public static void Off<T>(EventType type, Action<T> handler) where T : unmanaged
+        public static void Off<[DynamicallyAccessedMembers(StructRequirements)] T>(EventType type, Action<T> handler) where T : unmanaged
         {
             if (handler is null) return;
 
@@ -99,7 +104,7 @@ namespace NativePluginKit.Features.Events
             void Invoke(IntPtr dataPtr);
         }
 
-        private sealed class EventConverter<T> : IEventConverter where T : unmanaged
+        private sealed class EventConverter<[DynamicallyAccessedMembers(StructRequirements)] T> : IEventConverter where T : unmanaged
         {
             private readonly List<Action<T>> _handlers;
             public EventConverter(List<Action<T>> handlers) { _handlers = handlers; }
@@ -127,7 +132,7 @@ namespace NativePluginKit.Features.Events
         // 按 T 分组的注册表
         // ==================================================================
 
-        private static class Registry<T> where T : unmanaged
+        private static class Registry<[DynamicallyAccessedMembers(StructRequirements)] T> where T : unmanaged
         {
             public static readonly Dictionary<EventType, Slot> Slots = new();
             public static readonly object Lock = new();
