@@ -166,6 +166,7 @@ namespace NativePluginKit.Loader
         {
             foreach (var handle in _plugins)
             {
+                LogWriter($"Unloading plugin: {handle.Info.GetName()}");
                 IntPtr stopPtr = NativeMethods.GetProcAddress(handle.ModuleHandle, "OnStop");
                 if (stopPtr != IntPtr.Zero)
                 {
