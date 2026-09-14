@@ -9,10 +9,6 @@ namespace NativePluginKit.Loader.Constants
         // ====== 基础设施 ======
         public delegate void FreeStringDelegate(IntPtr ptr);
 
-        // ====== 场景 ======
-        public delegate void TransitionToSceneDelegate(IntPtr scenePathPtr, bool fadeOut);
-        public delegate void TransitionToScenePublicDelegate(string scenePath, bool fadeOut);
-
         public delegate IntPtr GetStringDelegate();
         public delegate string GetStringPublicDelegate();
 
@@ -33,12 +29,6 @@ namespace NativePluginKit.Loader.Constants
         // ====== 剧情 ======
         public delegate int GetBoolDelegate();
         public delegate bool GetBoolPublicDelegate();
-
-        public delegate void StartTimelineDelegate(IntPtr namePtr, bool battle);
-        public delegate void StartTimelinePublicDelegate(string name, bool battle);
-
-        public delegate void EndTimelineDelegate(bool skipEnding);
-        public delegate void EndTimelinePublicDelegate(bool skipEnding);
 
         // 卡牌：int -> string
         public delegate IntPtr GetStringFromIntDelegate(int index);
@@ -97,7 +87,6 @@ namespace NativePluginKit.Loader.Constants
             // 基础设施
             IntPtr freeString,
             // 场景
-            IntPtr transition,
             IntPtr getCurrentScenePath,
             // 日志
             IntPtr printLog,
@@ -106,7 +95,6 @@ namespace NativePluginKit.Loader.Constants
             IntPtr logDebug,
             // 配置
             IntPtr getCharacterImagePath,
-            IntPtr getExecutableDirectory,
             IntPtr getPluginsDirectory,
             // 计时
             IntPtr getTimeSinceStartup,
@@ -116,9 +104,6 @@ namespace NativePluginKit.Loader.Constants
             // 剧情
             IntPtr getCurrentTimelineName,
             IntPtr isBattle,
-            IntPtr startTimeline,
-            IntPtr endTimeline,
-            IntPtr sendSignal,
             // 卡牌基础
             IntPtr cardGetCount,
             IntPtr cardGetNameAt,
@@ -178,7 +163,6 @@ namespace NativePluginKit.Loader.Constants
             {
                 FreeString = freeString,
 
-                TransitionToScene = transition,
                 Scene_GetCurrentScenePath = getCurrentScenePath,
 
                 PrintLog = printLog,
@@ -187,7 +171,6 @@ namespace NativePluginKit.Loader.Constants
                 LogDebug = logDebug,
 
                 Config_GetCharacterImagePath = getCharacterImagePath,
-                Config_GetExecutableDirectory = getExecutableDirectory,
                 Config_GetPluginsDirectory = getPluginsDirectory,
 
                 Timing_GetTimeSinceStartup = getTimeSinceStartup,
@@ -197,9 +180,6 @@ namespace NativePluginKit.Loader.Constants
 
                 Story_GetCurrentTimelineName = getCurrentTimelineName,
                 Story_IsBattle = isBattle,
-                Story_StartTimeline = startTimeline,
-                Story_EndTimeline = endTimeline,
-                Story_SendSignal = sendSignal,
 
                 Card_GetCardCount = cardGetCount,
                 Card_GetCardNameAt = cardGetNameAt,

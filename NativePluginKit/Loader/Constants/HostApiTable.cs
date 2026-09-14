@@ -15,11 +15,6 @@ namespace NativePluginKit.Loader.Constants
             typeof(FreeStringDelegate), typeof(FreeStringDelegate))]
         public IntPtr FreeString;
 
-        // ====== 场景 ======
-        [HostApi("NativePluginKit.Features.FMOD", "Transition", "TransitionToScene",
-            typeof(TransitionToSceneDelegate), typeof(TransitionToScenePublicDelegate))]
-        public IntPtr TransitionToScene;
-
         [HostApi("NativePluginKit.Features.Scene", "Scene", "GetCurrentScenePath",
             typeof(GetStringDelegate), typeof(GetStringPublicDelegate))]
         public IntPtr Scene_GetCurrentScenePath;
@@ -45,10 +40,6 @@ namespace NativePluginKit.Loader.Constants
         [HostApi("NativePluginKit.Features.Config", "Config", "GetCharacterImagePath",
             typeof(GetStringFromStringDelegate), typeof(GetStringFromStringPublicDelegate))]
         public IntPtr Config_GetCharacterImagePath;
-
-        [HostApi("NativePluginKit.Features.Config", "Config", "GetExecutableDirectory",
-            typeof(GetStringDelegate), typeof(GetStringPublicDelegate))]
-        public IntPtr Config_GetExecutableDirectory;
 
         [HostApi("NativePluginKit.Features.Config", "Config", "GetPluginsDirectory",
             typeof(GetStringDelegate), typeof(GetStringPublicDelegate))]
@@ -76,18 +67,6 @@ namespace NativePluginKit.Loader.Constants
         [HostApi("NativePluginKit.Features.Story", "Story", "IsBattle",
             typeof(GetBoolDelegate), typeof(GetBoolPublicDelegate))]
         public IntPtr Story_IsBattle;
-
-        [HostApi("NativePluginKit.Features.Story", "Story", "StartTimeline",
-            typeof(StartTimelineDelegate), typeof(StartTimelinePublicDelegate))]
-        public IntPtr Story_StartTimeline;
-
-        [HostApi("NativePluginKit.Features.Story", "Story", "EndTimeline",
-            typeof(EndTimelineDelegate), typeof(EndTimelinePublicDelegate))]
-        public IntPtr Story_EndTimeline;
-
-        [HostApi("NativePluginKit.Features.Story", "Story", "SendSignal",
-            typeof(PrintLogDelegate), typeof(PrintLogPublicDelegate))]
-        public IntPtr Story_SendSignal;
 
         // ====== 卡牌基础 ======
         [HostApi("NativePluginKit.Features.Cards", "Card", "GetCardCount",
