@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace NativePluginKit.Loader.Constants
 {
     /// <summary>
@@ -7,76 +9,126 @@ namespace NativePluginKit.Loader.Constants
     public static class HostApiBridgeBuilder
     {
         // ====== 基础设施 ======
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FreeStringDelegate(IntPtr ptr);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringDelegate();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate string GetStringPublicDelegate();
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromStringDelegate(IntPtr inputPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate string GetStringFromStringPublicDelegate(string input);
 
         // ====== 日志 ======
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void PrintLogDelegate(IntPtr messagePtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void PrintLogPublicDelegate(string message);
 
         // ====== 计时 ======
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate double GetDoubleDelegate();
 
         // ====== 事件 ======
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool RegisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool UnregisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
 
         // ====== 剧情 ======
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetBoolDelegate();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool GetBoolPublicDelegate();
 
         // 卡牌：int -> string
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromIntDelegate(int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate string GetStringFromIntPublicDelegate(int index);
 
         // 卡牌：int 无参
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntDelegate();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntPublicDelegate();
 
         // 卡牌：string -> int / bool
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromStringDelegate(IntPtr namePtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromStringPublicDelegate(string name);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetBoolFromStringDelegate(IntPtr namePtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool GetBoolFromStringPublicDelegate(string name);
 
         // 卡牌：string + int -> string / int / bool / float
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromStringIntDelegate(IntPtr namePtr, int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate string GetStringFromStringIntPublicDelegate(string name, int index);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromStringIntDelegate(IntPtr namePtr, int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromStringIntPublicDelegate(string name, int index);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetBoolFromStringIntDelegate(IntPtr namePtr, int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool GetBoolFromStringIntPublicDelegate(string name, int index);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate float GetFloatFromStringIntDelegate(IntPtr namePtr, int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate float GetFloatFromStringIntPublicDelegate(string name, int index);
 
         // 实体：(ulong, ulong) = ObjectId parts
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromIdDelegate(ulong low, ulong high);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate string GetStringFromIdPublicDelegate(ulong low, ulong high);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromIdDelegate(ulong low, ulong high);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromIdPublicDelegate(ulong low, ulong high);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetBoolFromIdDelegate(ulong low, ulong high);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool GetBoolFromIdPublicDelegate(ulong low, ulong high);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromIdIntDelegate(ulong low, ulong high, int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate string GetStringFromIdIntPublicDelegate(ulong low, ulong high, int index);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromIdIntDelegate(ulong low, ulong high, int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromIdIntPublicDelegate(ulong low, ulong high, int index);
 
         // 实体：id 写入 16 字节缓冲区
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetEntityIdAtDelegate(int index, IntPtr out16Bytes);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetEntityIdAtPublicDelegate(int index, IntPtr out16Bytes);
+
+        // ====== 委托强引用池 ======
+
+        private static readonly List<Delegate> _keepAlive = new();
+
+        private static IntPtr Ptr(Delegate d)
+        {
+            _keepAlive.Add(d);
+            return Marshal.GetFunctionPointerForDelegate(d);
+        }
 
         /// <summary>
         /// 创建填充了函数指针的 <see cref="HostApiTable"/> 实例
@@ -85,155 +137,155 @@ namespace NativePluginKit.Loader.Constants
         /// <returns>包含非托管函数指针的API表结构体</returns>
         public static HostApiTable Create(
             // 基础设施
-            IntPtr freeString,
+            FreeStringDelegate freeString,
             // 场景
-            IntPtr getCurrentScenePath,
+            GetStringDelegate getCurrentScenePath,
             // 日志
-            IntPtr printLog,
-            IntPtr printWarning,
-            IntPtr printError,
-            IntPtr logDebug,
+            PrintLogDelegate printLog,
+            PrintLogDelegate printWarning,
+            FreeStringDelegate printError,
+            FreeStringDelegate logDebug,
             // 配置
-            IntPtr getCharacterImagePath,
-            IntPtr getPluginsDirectory,
+            GetStringFromStringDelegate getCharacterImagePath,
+            GetStringDelegate getPluginsDirectory,
             // 计时
-            IntPtr getTimeSinceStartup,
+            GetDoubleDelegate getTimeSinceStartup,
             // 事件
-            IntPtr registerEvent,
-            IntPtr unregisterEvent,
+            RegisterEventDelegate registerEvent,
+            UnregisterEventDelegate unregisterEvent,
             // 剧情
-            IntPtr getCurrentTimelineName,
-            IntPtr isBattle,
+            GetStringDelegate getCurrentTimelineName,
+            GetBoolDelegate isBattle,
             // 卡牌基础
-            IntPtr cardGetCount,
-            IntPtr cardGetNameAt,
-            IntPtr cardContains,
-            IntPtr cardGetDisplayName,
-            IntPtr cardGetDescription,
-            IntPtr cardGetImageName,
-            IntPtr cardGetCost,
-            IntPtr cardGetBaseAttack,
-            IntPtr cardGetMaxStack,
-            IntPtr cardGetWeight,
-            IntPtr cardGetAttackType,
-            IntPtr cardGetCardType,
+            GetIntDelegate cardGetCount,
+            GetStringFromIntDelegate cardGetNameAt,
+            GetBoolFromStringDelegate cardContains,
+            GetStringFromStringDelegate cardGetDisplayName,
+            GetStringFromStringDelegate cardGetDescription,
+            GetStringFromStringDelegate cardGetImageName,
+            GetIntFromStringDelegate cardGetCost,
+            GetIntFromStringDelegate cardGetBaseAttack,
+            GetIntFromStringDelegate cardGetMaxStack,
+            GetIntFromStringDelegate cardGetWeight,
+            GetIntFromStringDelegate cardGetAttackType,
+            GetIntFromStringDelegate cardGetCardType,
             // 卡牌效果
-            IntPtr cardGetAppliedEffectCount,
-            IntPtr cardGetAppliedEffectId,
-            IntPtr cardGetAppliedEffectName,
-            IntPtr cardGetAppliedEffectCategory,
-            IntPtr cardGetAppliedEffectDuration,
-            IntPtr cardGetAppliedEffectIsStackable,
-            IntPtr cardGetAppliedEffectMaxStacks,
-            IntPtr cardGetAppliedEffectParam1,
-            IntPtr cardGetAppliedEffectParam2,
+            GetIntFromStringDelegate cardGetAppliedEffectCount,
+            GetStringFromStringIntDelegate cardGetAppliedEffectId,
+            GetStringFromStringIntDelegate cardGetAppliedEffectName,
+            GetIntFromStringIntDelegate cardGetAppliedEffectCategory,
+            GetIntFromStringIntDelegate cardGetAppliedEffectDuration,
+            GetBoolFromStringIntDelegate cardGetAppliedEffectIsStackable,
+            GetIntFromStringIntDelegate cardGetAppliedEffectMaxStacks,
+            GetFloatFromStringIntDelegate cardGetAppliedEffectParam1,
+            GetFloatFromStringIntDelegate cardGetAppliedEffectParam2,
             // 实体枚举
-            IntPtr entityGetCount,
-            IntPtr entityGetIdAt,
-            IntPtr entityContains,
+            GetIntDelegate entityGetCount,
+            GetEntityIdAtDelegate entityGetIdAt,
+            GetBoolFromIdDelegate entityContains,
             // 实体基础信息
-            IntPtr entityGetName,
-            IntPtr entityGetDisplayName,
-            IntPtr entityGetImagePath,
+            GetStringFromIdDelegate entityGetName,
+            GetStringFromIdDelegate entityGetDisplayName,
+            GetStringFromIdDelegate entityGetImagePath,
             // 实体数值
-            IntPtr entityGetMaxHP,
-            IntPtr entityGetCurrentHP,
-            IntPtr entityGetAttackPower,
-            IntPtr entityGetDodgeChance,
-            IntPtr entityGetShieldValue,
-            IntPtr entityGetArmorValue,
-            IntPtr entityGetCurrentCost,
-            IntPtr entityGetMaxCost,
+            GetIntFromIdDelegate entityGetMaxHP,
+            GetIntFromIdDelegate entityGetCurrentHP,
+            GetIntFromIdDelegate entityGetAttackPower,
+            GetIntFromIdDelegate entityGetDodgeChance,
+            GetIntFromIdDelegate entityGetShieldValue,
+            GetIntFromIdDelegate entityGetArmorValue,
+            GetIntFromIdDelegate entityGetCurrentCost,
+            GetIntFromIdDelegate entityGetMaxCost,
             // 实体状态
-            IntPtr entityIsAlive,
-            IntPtr entityIsDead,
-            IntPtr entityCanAct,
-            IntPtr entityIsPlayer,
-            IntPtr entityIsMob,
+            GetBoolFromIdDelegate entityIsAlive,
+            GetBoolFromIdDelegate entityIsDead,
+            GetBoolFromIdDelegate entityCanAct,
+            GetBoolFromIdDelegate entityIsPlayer,
+            GetBoolFromIdDelegate entityIsMob,
             // 实体效果
-            IntPtr entityGetEffectCount,
-            IntPtr entityGetEffectId,
-            IntPtr entityGetEffectName,
-            IntPtr entityGetEffectCategory,
-            IntPtr entityGetEffectRemainingDuration,
-            IntPtr entityGetEffectCurrentStacks,
-            IntPtr entityGetEffectMaxStacks)
+            GetIntFromIdDelegate entityGetEffectCount,
+            GetStringFromIdIntDelegate entityGetEffectId,
+            GetStringFromIdIntDelegate entityGetEffectName,
+            GetIntFromIdIntDelegate entityGetEffectCategory,
+            GetIntFromIdIntDelegate entityGetEffectRemainingDuration,
+            GetIntFromIdIntDelegate entityGetEffectCurrentStacks,
+            GetIntFromIdIntDelegate entityGetEffectMaxStacks)
         {
             return new HostApiTable
             {
-                FreeString = freeString,
+                FreeString = Ptr(freeString),
 
-                Scene_GetCurrentScenePath = getCurrentScenePath,
+                Scene_GetCurrentScenePath = Ptr(getCurrentScenePath),
 
-                PrintLog = printLog,
-                PrintWarning = printWarning,
-                PrintError = printError,
-                LogDebug = logDebug,
+                PrintLog = Ptr(printLog),
+                PrintWarning = Ptr(printWarning),
+                PrintError = Ptr(printError),
+                LogDebug = Ptr(logDebug),
 
-                Config_GetCharacterImagePath = getCharacterImagePath,
-                Config_GetPluginsDirectory = getPluginsDirectory,
+                Config_GetCharacterImagePath = Ptr(getCharacterImagePath),
+                Config_GetPluginsDirectory = Ptr(getPluginsDirectory),
 
-                Timing_GetTimeSinceStartup = getTimeSinceStartup,
+                Timing_GetTimeSinceStartup = Ptr(getTimeSinceStartup),
 
-                RegisterEventCallback = registerEvent,
-                UnregisterEventCallback = unregisterEvent,
+                RegisterEventCallback = Ptr(registerEvent),
+                UnregisterEventCallback = Ptr(unregisterEvent),
 
-                Story_GetCurrentTimelineName = getCurrentTimelineName,
-                Story_IsBattle = isBattle,
+                Story_GetCurrentTimelineName = Ptr(getCurrentTimelineName),
+                Story_IsBattle = Ptr(isBattle),
 
-                Card_GetCardCount = cardGetCount,
-                Card_GetCardNameAt = cardGetNameAt,
-                Card_Contains = cardContains,
-                Card_GetDisplayName = cardGetDisplayName,
-                Card_GetDescription = cardGetDescription,
-                Card_GetImageName = cardGetImageName,
-                Card_GetCost = cardGetCost,
-                Card_GetBaseAttack = cardGetBaseAttack,
-                Card_GetMaxStack = cardGetMaxStack,
-                Card_GetWeight = cardGetWeight,
-                Card_GetAttackType = cardGetAttackType,
-                Card_GetCardType = cardGetCardType,
+                Card_GetCardCount = Ptr(cardGetCount),
+                Card_GetCardNameAt = Ptr(cardGetNameAt),
+                Card_Contains = Ptr(cardContains),
+                Card_GetDisplayName = Ptr(cardGetDisplayName),
+                Card_GetDescription = Ptr(cardGetDescription),
+                Card_GetImageName = Ptr(cardGetImageName),
+                Card_GetCost = Ptr(cardGetCost),
+                Card_GetBaseAttack = Ptr(cardGetBaseAttack),
+                Card_GetMaxStack = Ptr(cardGetMaxStack),
+                Card_GetWeight = Ptr(cardGetWeight),
+                Card_GetAttackType = Ptr(cardGetAttackType),
+                Card_GetCardType = Ptr(cardGetCardType),
 
-                Card_GetAppliedEffectCount = cardGetAppliedEffectCount,
-                Card_GetAppliedEffectId = cardGetAppliedEffectId,
-                Card_GetAppliedEffectName = cardGetAppliedEffectName,
-                Card_GetAppliedEffectCategory = cardGetAppliedEffectCategory,
-                Card_GetAppliedEffectDuration = cardGetAppliedEffectDuration,
-                Card_GetAppliedEffectIsStackable = cardGetAppliedEffectIsStackable,
-                Card_GetAppliedEffectMaxStacks = cardGetAppliedEffectMaxStacks,
-                Card_GetAppliedEffectParam1 = cardGetAppliedEffectParam1,
-                Card_GetAppliedEffectParam2 = cardGetAppliedEffectParam2,
+                Card_GetAppliedEffectCount = Ptr(cardGetAppliedEffectCount),
+                Card_GetAppliedEffectId = Ptr(cardGetAppliedEffectId),
+                Card_GetAppliedEffectName = Ptr(cardGetAppliedEffectName),
+                Card_GetAppliedEffectCategory = Ptr(cardGetAppliedEffectCategory),
+                Card_GetAppliedEffectDuration = Ptr(cardGetAppliedEffectDuration),
+                Card_GetAppliedEffectIsStackable = Ptr(cardGetAppliedEffectIsStackable),
+                Card_GetAppliedEffectMaxStacks = Ptr(cardGetAppliedEffectMaxStacks),
+                Card_GetAppliedEffectParam1 = Ptr(cardGetAppliedEffectParam1),
+                Card_GetAppliedEffectParam2 = Ptr(cardGetAppliedEffectParam2),
 
-                Entity_GetCount = entityGetCount,
-                Entity_GetIdAt = entityGetIdAt,
-                Entity_Contains = entityContains,
+                Entity_GetCount = Ptr(entityGetCount),
+                Entity_GetIdAt = Ptr(entityGetIdAt),
+                Entity_Contains = Ptr(entityContains),
 
-                Entity_GetName = entityGetName,
-                Entity_GetDisplayName = entityGetDisplayName,
-                Entity_GetImagePath = entityGetImagePath,
+                Entity_GetName = Ptr(entityGetName),
+                Entity_GetDisplayName = Ptr(entityGetDisplayName),
+                Entity_GetImagePath = Ptr(entityGetImagePath),
 
-                Entity_GetMaxHP = entityGetMaxHP,
-                Entity_GetCurrentHP = entityGetCurrentHP,
-                Entity_GetAttackPower = entityGetAttackPower,
-                Entity_GetDodgeChance = entityGetDodgeChance,
-                Entity_GetShieldValue = entityGetShieldValue,
-                Entity_GetArmorValue = entityGetArmorValue,
-                Entity_GetCurrentCost = entityGetCurrentCost,
-                Entity_GetMaxCost = entityGetMaxCost,
+                Entity_GetMaxHP = Ptr(entityGetMaxHP),
+                Entity_GetCurrentHP = Ptr(entityGetCurrentHP),
+                Entity_GetAttackPower = Ptr(entityGetAttackPower),
+                Entity_GetDodgeChance = Ptr(entityGetDodgeChance),
+                Entity_GetShieldValue = Ptr(entityGetShieldValue),
+                Entity_GetArmorValue = Ptr(entityGetArmorValue),
+                Entity_GetCurrentCost = Ptr(entityGetCurrentCost),
+                Entity_GetMaxCost = Ptr(entityGetMaxCost),
 
-                Entity_IsAlive = entityIsAlive,
-                Entity_IsDead = entityIsDead,
-                Entity_CanAct = entityCanAct,
-                Entity_IsPlayer = entityIsPlayer,
-                Entity_IsMob = entityIsMob,
+                Entity_IsAlive = Ptr(entityIsAlive),
+                Entity_IsDead = Ptr(entityIsDead),
+                Entity_CanAct = Ptr(entityCanAct),
+                Entity_IsPlayer = Ptr(entityIsPlayer),
+                Entity_IsMob = Ptr(entityIsMob),
 
-                Entity_GetEffectCount = entityGetEffectCount,
-                Entity_GetEffectId = entityGetEffectId,
-                Entity_GetEffectName = entityGetEffectName,
-                Entity_GetEffectCategory = entityGetEffectCategory,
-                Entity_GetEffectRemainingDuration = entityGetEffectRemainingDuration,
-                Entity_GetEffectCurrentStacks = entityGetEffectCurrentStacks,
-                Entity_GetEffectMaxStacks = entityGetEffectMaxStacks,
+                Entity_GetEffectCount = Ptr(entityGetEffectCount),
+                Entity_GetEffectId = Ptr(entityGetEffectId),
+                Entity_GetEffectName = Ptr(entityGetEffectName),
+                Entity_GetEffectCategory = Ptr(entityGetEffectCategory),
+                Entity_GetEffectRemainingDuration = Ptr(entityGetEffectRemainingDuration),
+                Entity_GetEffectCurrentStacks = Ptr(entityGetEffectCurrentStacks),
+                Entity_GetEffectMaxStacks = Ptr(entityGetEffectMaxStacks),
             };
         }
     }
