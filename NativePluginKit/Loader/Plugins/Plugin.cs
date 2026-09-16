@@ -7,7 +7,7 @@ namespace NativePluginKit.Loader.Plugins
     /// 所有插件的基类，提供与宿主程序交互的基础功能
     /// 插件继承此类并实现 <see cref="OnStart"/> 和 <see cref="OnStop"/> 方法
     /// </summary>
-    public abstract class Plugin
+    public abstract unsafe class Plugin
     {
         private static HostApiTable _api;
         private static IntPtr _pluginInfoPtr;
@@ -87,7 +87,7 @@ namespace NativePluginKit.Loader.Plugins
         /// </remarks>
         protected static void Initialize(IntPtr hostApiTablePtr, Plugin instance)
         {
-            _api = Marshal.PtrToStructure<HostApiTable>(hostApiTablePtr);
+            _api = *(HostApiTable*)hostApiTablePtr.ToPointer();
             PluginContext.CurrentApi = _api;
             PluginContext.PluginName = instance.Name;
 

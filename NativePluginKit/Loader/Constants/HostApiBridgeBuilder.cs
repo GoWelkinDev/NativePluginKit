@@ -124,7 +124,7 @@ namespace NativePluginKit.Loader.Constants
 
         private static readonly List<Delegate> _keepAlive = new();
 
-        private static IntPtr Ptr(Delegate d)
+        private static IntPtr Ptr<TDelegate>(TDelegate d) where TDelegate : Delegate
         {
             _keepAlive.Add(d);
             return Marshal.GetFunctionPointerForDelegate(d);

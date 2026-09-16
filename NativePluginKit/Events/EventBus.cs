@@ -13,7 +13,7 @@ namespace NativePluginKit.Features.Events
     /// 内部按事件类型 T 分组，每种 T 使用一个独立的非托管分发器
     /// 由 NativeAOT 为每个封闭泛型类型生成独立实现
     /// </remarks>
-    public static class EventBus
+    public static unsafe class EventBus
     {
         private const DynamicallyAccessedMemberTypes StructRequirements =
             DynamicallyAccessedMemberTypes.PublicConstructors |
@@ -111,7 +111,7 @@ namespace NativePluginKit.Features.Events
 
             public void Invoke(IntPtr dataPtr)
             {
-                var payload = Marshal.PtrToStructure<T>(dataPtr);
+                var payload = *(T*)dataPtr.ToPointer();
 
                 Action<T>[] snapshot;
                 lock (_handlers) snapshot = _handlers.ToArray();
