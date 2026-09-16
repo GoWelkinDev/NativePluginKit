@@ -35,7 +35,7 @@ namespace NativePluginKit.Loader.Plugins
         /// <summary>
         /// 插件版本号，默认为所在程序集的版本号
         /// </summary>
-        public virtual Version? Version => GetType().Assembly.GetName().Version;
+        public abstract Version Version { get; }
 
         /// <summary>
         /// 插件所要求的宿主程序API版本
@@ -55,12 +55,12 @@ namespace NativePluginKit.Loader.Plugins
                 NamePtr = Marshal.StringToCoTaskMemUTF8(plugin.Name),
                 DescriptionPtr = Marshal.StringToCoTaskMemUTF8(plugin.Description),
                 AuthorPtr = Marshal.StringToCoTaskMemUTF8(plugin.Author),
-                MajorVersion = plugin.Version?.Major ?? 0,
-                MinorVersion = plugin.Version?.Minor ?? 0,
-                BuildVersion = plugin.Version?.Build ?? 0,
-                RevisionVersion = plugin.Version?.Revision ?? 0,
-                RequiredApiMajor = plugin.RequiredApiVersion.Major,
-                RequiredApiMinor = plugin.RequiredApiVersion.Minor
+                MajorVersion = Math.Max(plugin.Version.Major, 0),
+                MinorVersion = Math.Max(plugin.Version.Minor, 0),
+                BuildVersion = Math.Max(plugin.Version.Build, 0),
+                RequiredApiMajor = Math.Max(plugin.RequiredApiVersion.Major, 0),
+                RequiredApiMinor = Math.Max(plugin.RequiredApiVersion.Minor, 0),
+                RequiredApiBuild = Math.Max(plugin.RequiredApiVersion.Build, 0),
             };
 
             _pluginInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf<PluginInfo>());

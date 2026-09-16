@@ -10,21 +10,21 @@ namespace NativePluginKit.Loader.Constants
         public IntPtr DescriptionPtr;
         public IntPtr AuthorPtr;
 
-        // 版本号使用两个 int 表示主版本和次版本，避免跨 ABI 传递 System.Version 对象
+        // 插件版本号
         public int MajorVersion;
         public int MinorVersion;
         public int BuildVersion;
-        public int RevisionVersion;
 
         // 所需 API 版本
         public int RequiredApiMajor;
         public int RequiredApiMinor;
+        public int RequiredApiBuild;
 
         // 将指针转换为托管字符串的辅助方法（在主程序端使用）
         public string GetName() => Marshal.PtrToStringUTF8(NamePtr) ?? string.Empty;
         public string GetDescription() => Marshal.PtrToStringUTF8(DescriptionPtr) ?? string.Empty;
         public string GetAuthor() => Marshal.PtrToStringUTF8(AuthorPtr) ?? string.Empty;
-        public Version GetVersion() => new Version(MajorVersion, MinorVersion, BuildVersion, RevisionVersion);
-        public Version GetRequiredApiVersion() => new Version(RequiredApiMajor, RequiredApiMinor);
+        public Version GetVersion() => new Version(MajorVersion, MinorVersion, BuildVersion);
+        public Version GetRequiredApiVersion() => new Version(RequiredApiMajor, RequiredApiMinor, RequiredApiBuild);
     }
 }
