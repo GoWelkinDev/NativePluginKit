@@ -2,4 +2,4 @@
 
 Official NativeAOT-compatible client-side plugin system for Unknown: Site-0 game.
 
-**Documentation can be found [here](https://github.com/GoWelkinDev/NativePluginKit/blob/master/NativePluginKit.Docs/api.md).**
+**Documentation can be found [here](https://github.com/GoWelkinDev/NativePluginKit/wiki).**
