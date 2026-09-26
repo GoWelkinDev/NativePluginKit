@@ -1,5 +1,5 @@
-using System.Runtime.InteropServices;
 using NativePluginKit.Loader.Constants;
+using System.Runtime.InteropServices;
 
 namespace NativePluginKit.Loader
 {
