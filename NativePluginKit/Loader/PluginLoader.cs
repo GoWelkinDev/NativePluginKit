@@ -50,19 +50,17 @@ namespace NativePluginKit.Loader
         /// </remarks>
         public bool LoadPlugin(string dllPath)
         {
-            IntPtr hModule = NativeMethods.LoadLibrary(dllPath);
-            if (hModule == IntPtr.Zero)
+            if (!NativeLibrary.TryLoad(dllPath, out IntPtr hModule))
             {
-                LogWriter($"Failed to load {dllPath}, error: {Marshal.GetLastWin32Error()}");
+                LogWriter($"Failed to load {dllPath}");
                 return false;
             }
 
             // 获取 PluginInfo
-            IntPtr infoFuncPtr = NativeMethods.GetProcAddress(hModule, "GetPluginInfo");
-            if (infoFuncPtr == IntPtr.Zero)
+            if (!NativeLibrary.TryGetExport(hModule, "GetPluginInfo", out IntPtr infoFuncPtr))
             {
                 LogWriter($"GetPluginInfo not found in {Path.GetFileName(dllPath)}. Plugin rejected.");
-                NativeMethods.FreeLibrary(hModule);
+                NativeLibrary.Free(hModule);
                 return false;
             }
 
@@ -71,7 +69,7 @@ namespace NativePluginKit.Loader
             if (pluginInfoPtr == IntPtr.Zero)
             {
                 LogWriter($"GetPluginInfo returned null in {Path.GetFileName(dllPath)}. Plugin rejected.");
-                NativeMethods.FreeLibrary(hModule);
+                NativeLibrary.Free(hModule);
                 return false;
             }
 
@@ -82,16 +80,15 @@ namespace NativePluginKit.Loader
             if (requiredApi.Major != CurrentApiVersion.Major || requiredApi.Minor > CurrentApiVersion.Minor)
             {
                 LogWriter($"Plugin '{info.GetName()}' requires API v{requiredApi}, but host provides v{CurrentApiVersion}. Plugin rejected.");
-                NativeMethods.FreeLibrary(hModule);
+                NativeLibrary.Free(hModule);
                 return false;
             }
 
             // 获取 OnInit
-            IntPtr initPtr = NativeMethods.GetProcAddress(hModule, "OnInit");
-            if (initPtr == IntPtr.Zero)
+            if (!NativeLibrary.TryGetExport(hModule, "OnInit", out IntPtr initPtr))
             {
                 LogWriter("OnInit not found");
-                NativeMethods.FreeLibrary(hModule);
+                NativeLibrary.Free(hModule);
                 return false;
             }
 
@@ -110,7 +107,7 @@ namespace NativePluginKit.Loader
             {
                 LogWriter($"Exception during OnInit of '{info.GetName()}': {ex.Message}");
                 Marshal.FreeHGlobal(apiPtr);
-                NativeMethods.FreeLibrary(hModule);
+                NativeLibrary.Free(hModule);
                 return false;
             }
             finally
@@ -140,16 +137,11 @@ namespace NativePluginKit.Loader
         {
             if (!Directory.Exists(directoryPath))
             {
+                Directory.CreateDirectory(directoryPath);
                 return;
             }
 
-#if WINDOWS
-            const string pattern = "*.dll";
-#elif LINUX
-            const string pattern = "*.so";
-#elif MACOS
-            const string pattern = "*.dylib";
-#endif
+            string pattern = GetPlatformPattern();
 
             string[] dllFiles = Directory.GetFiles(directoryPath, pattern);
 
@@ -167,8 +159,8 @@ namespace NativePluginKit.Loader
             foreach (var handle in _plugins)
             {
                 LogWriter($"Unloading plugin: {handle.Info.GetName()}");
-                IntPtr stopPtr = NativeMethods.GetProcAddress(handle.ModuleHandle, "OnStop");
-                if (stopPtr != IntPtr.Zero)
+
+                if (NativeLibrary.TryGetExport(handle.ModuleHandle, "OnStop", out IntPtr stopPtr))
                 {
                     var stopFunc = (delegate* unmanaged<void>)stopPtr;
                     try
@@ -181,11 +173,18 @@ namespace NativePluginKit.Loader
                     }
                 }
 
-                NativeMethods.FreeLibrary(handle.ModuleHandle);
+                NativeLibrary.Free(handle.ModuleHandle);
                 LogWriter($"Unloaded plugin: {handle.Info.GetName()}");
             }
 
             _plugins.Clear();
+        }
+
+        private string GetPlatformPattern()
+        {
+            if (OperatingSystem.IsWindows()) return "*.dll";
+            if (OperatingSystem.IsMacOS()) return "*.dylib";
+            return "*.so";
         }
     }
 
@@ -194,43 +193,5 @@ namespace NativePluginKit.Loader
         public string DllPath = string.Empty;
         public IntPtr ModuleHandle;
         public PluginInfo Info;
-    }
-
-    /// <summary>
-    /// 提供对 Windows Kernel32 动态链接库函数的封装，供插件加载器使用
-    /// </summary>
-    internal partial class NativeMethods
-    {
-#if WINDOWS
-        [LibraryImport("kernel32.dll", EntryPoint = "LoadLibraryW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
-        private static partial IntPtr LoadLibraryW(string lpFileName);
-
-        [LibraryImport("kernel32.dll", EntryPoint = "GetProcAddress", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
-        private static partial IntPtr GetProcAddressRaw(IntPtr hModule, string procName);
-
-        [LibraryImport("kernel32.dll", EntryPoint = "FreeLibrary", SetLastError = false)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool FreeLibraryRaw(IntPtr hModule);
-
-        public static IntPtr LoadLibrary(string name) => LoadLibraryW(name);
-        public static IntPtr GetProcAddress(IntPtr h, string name) => GetProcAddressRaw(h, name);
-        public static bool FreeLibrary(IntPtr h) => FreeLibraryRaw(h);
-#elif LINUX || MACOS
-    private const int RTLD_NOW = 2;
-    private const int RTLD_LOCAL = 0;
-
-    [LibraryImport("libdl.so.2", EntryPoint = "dlopen", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
-    private static partial IntPtr dlopen(string fileName, int flags);
-
-    [LibraryImport("libdl.so.2", EntryPoint = "dlsym", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
-    private static partial IntPtr dlsym(IntPtr handle, string symbol);
-
-    [LibraryImport("libdl.so.2", EntryPoint = "dlclose", SetLastError = true)]
-    private static partial int dlclose(IntPtr handle);
-
-    public static IntPtr LoadLibrary(string name) => dlopen(name, RTLD_NOW | RTLD_LOCAL);
-    public static IntPtr GetProcAddress(IntPtr h, string name) => dlsym(h, name);
-    public static bool FreeLibrary(IntPtr h) => dlclose(h) == 0;
-#endif
     }
 }
