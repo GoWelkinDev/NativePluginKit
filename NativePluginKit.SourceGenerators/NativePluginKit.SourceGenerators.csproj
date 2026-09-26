@@ -2,10 +2,12 @@
 	
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	<Version>1.1.1</Version>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <IsRoslynComponent>true</IsRoslynComponent>
+	<IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

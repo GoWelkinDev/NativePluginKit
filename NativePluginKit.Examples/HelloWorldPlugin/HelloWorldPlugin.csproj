@@ -12,6 +12,7 @@
 		<IlcExportUnmanagedEntrypoints>true</IlcExportUnmanagedEntrypoints>
 		<IlcOptimizationPreference>Size</IlcOptimizationPreference>
 		<NativeLib>Shared</NativeLib>
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">

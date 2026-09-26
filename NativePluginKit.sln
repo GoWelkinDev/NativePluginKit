@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.8.12009.203
@@ -7,6 +8,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "NativePluginKit.Examples\HelloWorldPlugin\HelloWorldPlugin.csproj", "{7888767D-10E3-473E-BB69-5813243E19D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativePluginKit.SourceGenerators", "NativePluginKit.SourceGenerators\NativePluginKit.SourceGenerators.csproj", "{8F26C70B-704F-03CF-C3E5-AD64F3D8DC0C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{8CC18448-E39C-46D4-998E-E74E1183A6ED}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

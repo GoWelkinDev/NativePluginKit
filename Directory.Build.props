@@ -1,0 +1,32 @@
+<Project>
+  <PropertyGroup>
+    <Authors>GoWelkin Network</Authors>
+    <Company>GoWelkin Network</Company>
+    <Copyright>Copyright (c) 穹空网络(GoWelkin Network)</Copyright>
+
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+    <PackageProjectUrl>https://github.com/GoWelkinDev/NativePluginKit</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GoWelkinDev/NativePluginKit</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <PackageTags>gamedev;game;dotnet;native;plugin</PackageTags>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://github.com/GoWelkinDev/NativePluginKit/releases/tag/$(Version)</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
