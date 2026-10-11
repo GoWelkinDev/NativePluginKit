@@ -1,4 +1,7 @@
-﻿namespace NativePluginKit.Loader.Constants
+﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
+namespace NativePluginKit.Loader.Constants
 {
     /// <summary>
     /// 标注 <see cref="HostApiTable"/> 中的字段，指示源生成器为其生成公共 API 类

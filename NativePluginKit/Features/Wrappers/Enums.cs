@@ -1,4 +1,7 @@
-﻿namespace NativePluginKit.Features.Wrappers
+﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
+namespace NativePluginKit.Features.Wrappers
 {
     /// <summary>
     /// 攻击属性，数值与宿主 <c>AttackType</c> 一致

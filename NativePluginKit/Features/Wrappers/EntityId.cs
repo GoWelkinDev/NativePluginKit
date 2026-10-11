@@ -1,4 +1,7 @@
-﻿namespace NativePluginKit.Features.Wrappers
+﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
+namespace NativePluginKit.Features.Wrappers
 {
     /// <summary>
     /// 跨 ABI 的实体标识 (Guid 的低 64 位与高 64 位)

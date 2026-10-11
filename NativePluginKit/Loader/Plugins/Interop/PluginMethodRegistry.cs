@@ -1,4 +1,7 @@
-﻿namespace NativePluginKit.Loader.Plugins.Interop
+﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
+namespace NativePluginKit.Loader.Plugins.Interop
 {
     /// <summary>
     /// 宿主侧维护的跨插件方法注册表，键为 (pluginName, methodName), 值为非托管函数指针

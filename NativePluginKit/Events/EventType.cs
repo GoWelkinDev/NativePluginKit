@@ -1,4 +1,7 @@
-﻿namespace NativePluginKit.Events
+﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
+namespace NativePluginKit.Events
 {
     /// <summary>
     /// 事件类型标识

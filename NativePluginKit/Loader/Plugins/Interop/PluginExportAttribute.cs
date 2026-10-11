@@ -1,4 +1,7 @@
-﻿namespace NativePluginKit.Loader.Plugins.Interop
+﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
+namespace NativePluginKit.Loader.Plugins.Interop
 {
     /// <summary>
     /// 标记一个 static 方法，该方法将在插件初始化时被注册为对外暴露的方法

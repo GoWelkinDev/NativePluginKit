@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
 using NativePluginKit.Events;
 using NativePluginKit.Features.Cards;
 using NativePluginKit.Features.Config;

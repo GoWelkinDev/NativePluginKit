@@ -1,4 +1,7 @@
-﻿namespace NativePluginKit.Loader.Plugins.Interop
+﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
+// SPDX-License-Identifier: BSD-3-Clause
+
+namespace NativePluginKit.Loader.Plugins.Interop
 {
     /// <summary>
     /// 声明一个 static partial 方法以作为导入其他插件方法的占位符
