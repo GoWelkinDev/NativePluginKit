@@ -67,10 +67,8 @@ namespace HelloWorldPlugin
         private static void TestConfig()
         {
             string pluginDir = Config.GetPluginsDirectory();
-            string imagePath = Config.GetCharacterImagePath("Jiang_Qiuyue");
 
             Log.PrintLog($"[Config] PluginsDirectory     = {pluginDir}");
-            Log.PrintLog($"[Config] CharacterImagePath   = {imagePath}");
         }
 
         private static void TestScene()

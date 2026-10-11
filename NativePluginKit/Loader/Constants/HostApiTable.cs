@@ -86,14 +86,6 @@ namespace NativePluginKit.Loader.Constants
         public IntPtr LogDebug;
 
         /// <summary>
-        /// 获取角色立绘图片的资源包内完整路径
-        /// </summary>
-        /// <param name="imageName">图片名称</param>
-        [HostApi("NativePluginKit.Features.Config", "Config", "GetCharacterImagePath",
-            typeof(GetStringFromStringDelegate), typeof(GetStringFromStringPublicDelegate))]
-        public IntPtr Config_GetCharacterImagePath;
-
-        /// <summary>
         /// 返回宿主指定的插件目录路径
         /// </summary>
         [HostApi("NativePluginKit.Features.Config", "Config", "GetPluginsDirectory",

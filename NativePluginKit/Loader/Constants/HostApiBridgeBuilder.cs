@@ -150,7 +150,6 @@ namespace NativePluginKit.Loader.Constants
             FreeStringDelegate printError,
             FreeStringDelegate logDebug,
 
-            GetStringFromStringDelegate getCharacterImagePath,
             GetStringDelegate getPluginsDirectory,
 
             GetDoubleDelegate getTimeSinceStartup,
@@ -229,7 +228,6 @@ namespace NativePluginKit.Loader.Constants
                 PrintError = Ptr(printError),
                 LogDebug = Ptr(logDebug),
 
-                Config_GetCharacterImagePath = Ptr(getCharacterImagePath),
                 Config_GetPluginsDirectory = Ptr(getPluginsDirectory),
 
                 Timing_GetTimeSinceStartup = Ptr(getTimeSinceStartup),
