@@ -122,7 +122,10 @@ namespace NativePluginKit.SourceGenerators
                     sb.AppendLine($"{indent}    {{");
                     sb.AppendLine($"{indent}        __generatedInstance = new {p.ClassName}();");
                     sb.AppendLine($"{indent}        Initialize(hostApiTablePtr, __generatedInstance);");
+                    sb.AppendLine($"{indent}        __RegisterPluginMethods();");
                     sb.AppendLine($"{indent}    }}");
+                    sb.AppendLine();
+                    sb.AppendLine($"{indent}    static unsafe partial void __RegisterPluginMethods();");
                     sb.AppendLine();
                 }
 

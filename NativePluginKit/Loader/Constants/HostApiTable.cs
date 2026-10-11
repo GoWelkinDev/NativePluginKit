@@ -20,6 +20,37 @@ namespace NativePluginKit.Loader.Constants
         public IntPtr FreeString;
 
         /// <summary>
+        /// 将当前插件导出的方法注册到宿主插件方法表供其他插件调用
+        /// </summary>
+        /// <param name="pluginName">插件名称</param>
+        /// <param name="methodName">对外暴露的方法名</param>
+        /// <param name="fnPtr">方法对应的非托管函数指针</param>
+        /// <returns>注册成功返回 1, 否则返回 0</returns>
+        [HostApi("NativePluginKit.Features.Plugins", "PluginMethods", "Register",
+            typeof(RegisterPluginMethodDelegate), typeof(RegisterPluginMethodPublicDelegate))]
+        public IntPtr PluginMethods_Register;
+
+        /// <summary>
+        /// 从宿主插件方法表移除指定方法
+        /// </summary>
+        /// <param name="pluginName">插件名称</param>
+        /// <param name="methodName">要移除的方法名</param>
+        /// <returns>移除成功返回 1, 否则返回 0</returns>
+        [HostApi("NativePluginKit.Features.Plugins", "PluginMethods", "Unregister",
+            typeof(UnregisterPluginMethodDelegate), typeof(UnregisterPluginMethodPublicDelegate))]
+        public IntPtr PluginMethods_Unregister;
+
+        /// <summary>
+        /// 查询其他插件已注册的方法指针
+        /// </summary>
+        /// <param name="pluginName">目标插件名称</param>
+        /// <param name="methodName">目标方法名</param>
+        /// <returns>方法对应的函数指针未找到时返回 <see cref="IntPtr.Zero"/></returns>
+        [HostApi("NativePluginKit.Features.Plugins", "PluginMethods", "Get",
+            typeof(GetPluginMethodDelegate), typeof(GetPluginMethodPublicDelegate))]
+        public IntPtr PluginMethods_Get;
+
+        /// <summary>
         /// 返回当前场景资源路径，若无则为空字符串
         /// </summary>
         [HostApi("NativePluginKit.Features.Scene", "Scene", "GetCurrentScenePath",

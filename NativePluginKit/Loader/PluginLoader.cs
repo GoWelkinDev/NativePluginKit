@@ -1,4 +1,5 @@
 using NativePluginKit.Loader.Constants;
+using NativePluginKit.Loader.Plugins.Interop;
 using System.Runtime.InteropServices;
 
 namespace NativePluginKit.Loader
@@ -155,7 +156,10 @@ namespace NativePluginKit.Loader
         {
             foreach (var handle in _plugins)
             {
-                LogWriter($"Unloading plugin: {handle.Info.GetName()}");
+                var name = handle.Info.GetName();
+                LogWriter($"Unloading plugin: {name}");
+
+                PluginMethodRegistry.ClearPlugin(name);
 
                 if (NativeLibrary.TryGetExport(handle.ModuleHandle, "OnStop", out IntPtr stopPtr))
                 {

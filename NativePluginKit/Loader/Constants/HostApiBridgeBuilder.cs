@@ -22,6 +22,21 @@ namespace NativePluginKit.Loader.Constants
         public delegate string GetStringFromStringPublicDelegate(string imageName);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int RegisterPluginMethodDelegate(IntPtr pluginName, IntPtr methodName, IntPtr fnPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int RegisterPluginMethodPublicDelegate(string pluginName, string methodName, IntPtr fnPtr);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int UnregisterPluginMethodDelegate(IntPtr pluginName, IntPtr methodName);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int UnregisterPluginMethodPublicDelegate(string pluginName, string methodName);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr GetPluginMethodDelegate(IntPtr pluginName, IntPtr methodName);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr GetPluginMethodPublicDelegate(string pluginName, string methodName);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void PrintLogDelegate(IntPtr messagePtr);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void PrintLogPublicDelegate(string message);
@@ -124,6 +139,9 @@ namespace NativePluginKit.Loader.Constants
         /// <returns>包含非托管函数指针的API表结构体</returns>
         public static HostApiTable Create(
             FreeStringDelegate freeString,
+            RegisterPluginMethodDelegate registerPluginMethod,
+            UnregisterPluginMethodDelegate unregisterPluginMethod,
+            GetPluginMethodDelegate getPluginMethod,
 
             GetStringDelegate getCurrentScenePath,
 
@@ -200,6 +218,9 @@ namespace NativePluginKit.Loader.Constants
             return new HostApiTable
             {
                 FreeString = Ptr(freeString),
+                PluginMethods_Register = Ptr(registerPluginMethod),
+                PluginMethods_Unregister = Ptr(unregisterPluginMethod),
+                PluginMethods_Get = Ptr(getPluginMethod),
 
                 Scene_GetCurrentScenePath = Ptr(getCurrentScenePath),
 
