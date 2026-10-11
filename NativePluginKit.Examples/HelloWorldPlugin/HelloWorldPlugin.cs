@@ -18,17 +18,14 @@ namespace HelloWorldPlugin
     /// </summary>
     public partial class HelloWorldPlugin : Plugin
     {
-        private static HelloWorldPlugin? _self;
-
         public override string Name => "HelloWorldPlugin";
         public override string Description => "Exercises every NativePluginKit API.";
         public override string Author => "GoWelkinDev";
-        public override Version RequiredApiVersion => new(1, 0, 0);
+        public override Version RequiredApiVersion => new(1, 3, 0);
         public override Version Version => new(1, 0, 0);
 
         protected override void OnStart()
         {
-            _self = this;
             Log.PrintLog("=== HelloWorldPlugin: begin ===");
 
             TestLogger();
@@ -46,7 +43,6 @@ namespace HelloWorldPlugin
         public override void OnStop()
         {
             UnsubscribeAllEvents();
-            _self = null;
             Log.PrintLog("HelloWorldPlugin stopped.");
         }
 

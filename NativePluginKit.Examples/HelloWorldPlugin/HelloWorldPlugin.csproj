@@ -8,6 +8,7 @@
 		<PublishRelease>true</PublishRelease>
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>full</TrimMode>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<IlcExportUnmanagedEntrypoints>true</IlcExportUnmanagedEntrypoints>
 		<IlcOptimizationPreference>Size</IlcOptimizationPreference>
