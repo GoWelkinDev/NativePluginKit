@@ -1,7 +1,7 @@
 ﻿namespace NativePluginKit.Events.Handlers
 {
     /// <summary>
-    /// 宿主侧的事件分发器。将游戏内事件路由到所有已注册的插件回调
+    /// 宿主侧的事件分发器，将游戏内事件路由到所有已注册的插件回调
     /// 必须在主线程调用 Raise
     /// </summary>
     public static class EventDispatcher
@@ -17,8 +17,12 @@
         private static readonly object _lock = new();
 
         /// <summary>
-        /// 由插件通过 HostApi 调用
+        /// 注册事件回调
         /// </summary>
+        /// <param name="eventType">事件类型对应的数值</param>
+        /// <param name="callback">回调函数指针</param>
+        /// <param name="userData">用户自定义数据会原样传回回调</param>
+        /// <returns>注册成功返回 true</returns>
         public static bool Register(int eventType, IntPtr callback, IntPtr userData)
         {
             if (callback == IntPtr.Zero) return false;
@@ -41,8 +45,12 @@
 
 
         /// <summary>
-        /// 由插件通过 HostApi 调用
+        /// 注销事件回调
         /// </summary>
+        /// <param name="eventType">事件类型对应的数值</param>
+        /// <param name="callback">回调函数指针</param>
+        /// <param name="userData">注册时传入的用户自定义数据</param>
+        /// <returns>注销成功返回 true</returns>
         public static bool Unregister(int eventType, IntPtr callback, IntPtr userData)
         {
             if (callback == IntPtr.Zero) return false;
@@ -65,7 +73,7 @@
         }
 
         /// <summary>
-        /// 清空指定插件的所有订阅（插件卸载时调用）
+        /// 清空指定插件的所有事件订阅
         /// </summary>
         public static void ClearAll()
         {
@@ -73,9 +81,11 @@
         }
 
         /// <summary>
-        /// 触发事件,data 必须指向一个固定布局的结构体（含 EventHeader）
-        /// 且仅在本次调用期间有效。插件如需保留数据必须自行复制
+        /// 触发指定类型的事件, data 必须指向一个含 <see cref="EventHeader"/> 的固定布局结构体
+        /// 该指针仅在本次调用期间有效，插件如需保留数据必须自行复制
         /// </summary>
+        /// <param name="type">要触发的事件类型</param>
+        /// <param name="data">指向事件载荷的非托管指针</param>
         public static unsafe void Raise(EventType type, IntPtr data)
         {
             List<Subscription> snapshot;
@@ -92,9 +102,6 @@
             }
         }
 
-        /// <summary>
-        /// 便捷重载：直接传结构体，内部取地址
-        /// </summary>
         public static unsafe void Raise<T>(EventType type, ref T payload) where T : unmanaged
         {
             fixed (T* p = &payload)

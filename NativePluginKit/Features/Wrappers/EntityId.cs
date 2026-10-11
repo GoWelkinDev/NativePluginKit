@@ -1,8 +1,8 @@
 ﻿namespace NativePluginKit.Features.Wrappers
 {
     /// <summary>
-    /// 跨 ABI 的实体标识（Guid 的低/高 64 位）
-    /// 插件通过 <c>Entity.GetEntityIdAt(index)</c> 获取，之后可将其传回任意实体 API
+    /// 跨 ABI 的实体标识 (Guid 的低 64 位与高 64 位)
+    /// 插件通过 <c>Entity.GetEntityIdAt(index)</c> 获取之后可将其传回任意实体 API
     /// </summary>
     public readonly struct EntityId : IEquatable<EntityId>
     {

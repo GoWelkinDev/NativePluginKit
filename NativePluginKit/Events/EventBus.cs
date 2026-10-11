@@ -6,8 +6,7 @@ using System.Runtime.InteropServices;
 namespace NativePluginKit.Features.Events
 {
     /// <summary>
-    /// 插件侧事件订阅入口
-    /// 屏蔽函数指针、Marshal 转换等细节，只暴露 <see cref="Action{T}"/> 委托
+    /// 插件侧事件订阅入口，屏蔽函数指针与 Marshal 转换等细节，只暴露 <see cref="Action{T}"/> 委托
     /// </summary>
     /// <remarks>
     /// 内部按事件类型 T 分组，每种 T 使用一个独立的非托管分发器
@@ -19,8 +18,10 @@ namespace NativePluginKit.Features.Events
             DynamicallyAccessedMemberTypes.PublicConstructors |
             DynamicallyAccessedMemberTypes.NonPublicConstructors;
 
-        /// <summary>订阅指定类型的事件</summary>
-        /// <typeparam name="T">事件数据结构体（unmanaged）</typeparam>
+        /// <summary>
+        /// 订阅指定类型的事件
+        /// </summary>
+        /// <typeparam name="T">事件数据结构体，必须是 unmanaged 类型</typeparam>
         /// <param name="type">事件类型</param>
         /// <param name="handler">事件回调，在主线程调用</param>
         public static void On<[DynamicallyAccessedMembers(StructRequirements)] T>(EventType type, Action<T> handler) where T : unmanaged
@@ -50,8 +51,11 @@ namespace NativePluginKit.Features.Events
         }
 
         /// <summary>
-        /// 取消订阅
+        /// 取消指定类型事件的订阅
         /// </summary>
+        /// <typeparam name="T">事件数据结构体，必须是 unmanaged 类型</typeparam>
+        /// <param name="type">事件类型</param>
+        /// <param name="handler">要移除的事件回调</param>
         public static void Off<[DynamicallyAccessedMembers(StructRequirements)] T>(EventType type, Action<T> handler) where T : unmanaged
         {
             if (handler is null) return;
@@ -64,7 +68,6 @@ namespace NativePluginKit.Features.Events
 
                 if (slot.Handlers.Count == 0 && slot.Registered)
                 {
-                    // 现在传三参数
                     EventBridge.Unregister((int)type, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
 
                     if (slot.Handle.IsAllocated) slot.Handle.Free();
@@ -74,8 +77,11 @@ namespace NativePluginKit.Features.Events
         }
 
         /// <summary>
-        /// 由宿主通过函数指针调用
+        /// 由宿主通过函数指针调用的分发入口
         /// </summary>
+        /// <param name="eventType">事件类型对应的数值</param>
+        /// <param name="dataPtr">指向事件载荷的非托管指针</param>
+        /// <param name="userData">注册时传入的 GCHandle 编码指针</param>
         [UnmanagedCallersOnly]
         private static void Dispatch(int eventType, IntPtr dataPtr, IntPtr userData)
         {
@@ -95,7 +101,7 @@ namespace NativePluginKit.Features.Events
             }
         }
 
-        private static unsafe IntPtr DispatchPtr
+        private static IntPtr DispatchPtr
             => (IntPtr)(delegate* unmanaged<int, IntPtr, IntPtr, void>)&Dispatch;
 
         // 类型转换器
@@ -127,10 +133,6 @@ namespace NativePluginKit.Features.Events
                 }
             }
         }
-
-        // ==================================================================
-        // 按 T 分组的注册表
-        // ==================================================================
 
         private static class Registry<[DynamicallyAccessedMembers(StructRequirements)] T> where T : unmanaged
         {

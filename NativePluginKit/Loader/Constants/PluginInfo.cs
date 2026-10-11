@@ -5,7 +5,7 @@ namespace NativePluginKit.Loader.Constants
     [StructLayout(LayoutKind.Sequential)]
     public struct PluginInfo
     {
-        // 使用 UTF-8 字符串指针，插件负责提供有效指针（建议指向静态只读内存）
+        // 插件基本信息
         public IntPtr NamePtr;
         public IntPtr DescriptionPtr;
         public IntPtr AuthorPtr;

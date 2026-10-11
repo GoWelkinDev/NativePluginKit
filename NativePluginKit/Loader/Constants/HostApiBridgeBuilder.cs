@@ -8,7 +8,6 @@ namespace NativePluginKit.Loader.Constants
     /// </summary>
     public static class HostApiBridgeBuilder
     {
-        // ====== 基础设施 ======
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FreeStringDelegate(IntPtr ptr);
 
@@ -20,43 +19,36 @@ namespace NativePluginKit.Loader.Constants
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromStringDelegate(IntPtr inputPtr);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate string GetStringFromStringPublicDelegate(string input);
+        public delegate string GetStringFromStringPublicDelegate(string imageName);
 
-        // ====== 日志 ======
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void PrintLogDelegate(IntPtr messagePtr);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void PrintLogPublicDelegate(string message);
 
-        // ====== 计时 ======
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate double GetDoubleDelegate();
 
-        // ====== 事件 ======
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool RegisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool UnregisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
 
-        // ====== 剧情 ======
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetBoolDelegate();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool GetBoolPublicDelegate();
 
-        // 卡牌：int -> string
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromIntDelegate(int index);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate string GetStringFromIntPublicDelegate(int index);
 
-        // 卡牌：int 无参
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntDelegate();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntPublicDelegate();
 
-        // 卡牌：string -> int / bool
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromStringDelegate(IntPtr namePtr);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -67,7 +59,6 @@ namespace NativePluginKit.Loader.Constants
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool GetBoolFromStringPublicDelegate(string name);
 
-        // 卡牌：string + int -> string / int / bool / float
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromStringIntDelegate(IntPtr namePtr, int index);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -88,7 +79,6 @@ namespace NativePluginKit.Loader.Constants
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate float GetFloatFromStringIntPublicDelegate(string name, int index);
 
-        // 实体：(ulong, ulong) = ObjectId parts
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringFromIdDelegate(ulong low, ulong high);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -114,13 +104,10 @@ namespace NativePluginKit.Loader.Constants
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntFromIdIntPublicDelegate(ulong low, ulong high, int index);
 
-        // 实体：id 写入 16 字节缓冲区
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetEntityIdAtDelegate(int index, IntPtr out16Bytes);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetEntityIdAtPublicDelegate(int index, IntPtr out16Bytes);
-
-        // ====== 委托强引用池 ======
 
         private static readonly List<Delegate> _keepAlive = new();
 
@@ -136,27 +123,26 @@ namespace NativePluginKit.Loader.Constants
         /// </summary>
         /// <returns>包含非托管函数指针的API表结构体</returns>
         public static HostApiTable Create(
-            // 基础设施
             FreeStringDelegate freeString,
-            // 场景
+
             GetStringDelegate getCurrentScenePath,
-            // 日志
+
             PrintLogDelegate printLog,
             PrintLogDelegate printWarning,
             FreeStringDelegate printError,
             FreeStringDelegate logDebug,
-            // 配置
+
             GetStringFromStringDelegate getCharacterImagePath,
             GetStringDelegate getPluginsDirectory,
-            // 计时
+
             GetDoubleDelegate getTimeSinceStartup,
-            // 事件
+
             RegisterEventDelegate registerEvent,
             UnregisterEventDelegate unregisterEvent,
-            // 剧情
+
             GetStringDelegate getCurrentTimelineName,
             GetBoolDelegate isBattle,
-            // 卡牌基础
+
             GetIntDelegate cardGetCount,
             GetStringFromIntDelegate cardGetNameAt,
             GetBoolFromStringDelegate cardContains,
@@ -169,7 +155,7 @@ namespace NativePluginKit.Loader.Constants
             GetIntFromStringDelegate cardGetWeight,
             GetIntFromStringDelegate cardGetAttackType,
             GetIntFromStringDelegate cardGetCardType,
-            // 卡牌效果
+
             GetIntFromStringDelegate cardGetAppliedEffectCount,
             GetStringFromStringIntDelegate cardGetAppliedEffectId,
             GetStringFromStringIntDelegate cardGetAppliedEffectName,
@@ -179,15 +165,15 @@ namespace NativePluginKit.Loader.Constants
             GetIntFromStringIntDelegate cardGetAppliedEffectMaxStacks,
             GetFloatFromStringIntDelegate cardGetAppliedEffectParam1,
             GetFloatFromStringIntDelegate cardGetAppliedEffectParam2,
-            // 实体枚举
+
             GetIntDelegate entityGetCount,
             GetEntityIdAtDelegate entityGetIdAt,
             GetBoolFromIdDelegate entityContains,
-            // 实体基础信息
+
             GetStringFromIdDelegate entityGetName,
             GetStringFromIdDelegate entityGetDisplayName,
             GetStringFromIdDelegate entityGetImagePath,
-            // 实体数值
+
             GetIntFromIdDelegate entityGetMaxHP,
             GetIntFromIdDelegate entityGetCurrentHP,
             GetIntFromIdDelegate entityGetAttackPower,
@@ -196,13 +182,13 @@ namespace NativePluginKit.Loader.Constants
             GetIntFromIdDelegate entityGetArmorValue,
             GetIntFromIdDelegate entityGetCurrentCost,
             GetIntFromIdDelegate entityGetMaxCost,
-            // 实体状态
+
             GetBoolFromIdDelegate entityIsAlive,
             GetBoolFromIdDelegate entityIsDead,
             GetBoolFromIdDelegate entityCanAct,
             GetBoolFromIdDelegate entityIsPlayer,
             GetBoolFromIdDelegate entityIsMob,
-            // 实体效果
+
             GetIntFromIdDelegate entityGetEffectCount,
             GetStringFromIdIntDelegate entityGetEffectId,
             GetStringFromIdIntDelegate entityGetEffectName,

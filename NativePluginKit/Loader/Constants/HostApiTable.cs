@@ -19,6 +19,9 @@ namespace NativePluginKit.Loader.Constants
             typeof(FreeStringDelegate), typeof(FreeStringDelegate))]
         public IntPtr FreeString;
 
+        /// <summary>
+        /// 返回当前场景资源路径，若无则为空字符串
+        /// </summary>
         [HostApi("NativePluginKit.Features.Scene", "Scene", "GetCurrentScenePath",
             typeof(GetStringDelegate), typeof(GetStringPublicDelegate))]
         public IntPtr Scene_GetCurrentScenePath;
@@ -528,7 +531,7 @@ namespace NativePluginKit.Loader.Constants
     /// 插件导出的初始化函数签名
     /// 插件必须导出一个名为 <c>OnInit</c> 的函数，参数为指向 <see cref="HostApiTable"/> 的指针
     /// </summary>
-    /// <param name="hostApiTable">指向宿主API函数表的指针</param>
+    /// <param name="hostApiTable">指向宿主 API 函数表的指针</param>
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void PluginInitDelegate(IntPtr hostApiTable);
 }

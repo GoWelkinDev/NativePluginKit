@@ -33,7 +33,7 @@ namespace NativePluginKit.Loader.Plugins
         public abstract string Author { get; }
 
         /// <summary>
-        /// 插件版本号，默认为所在程序集的版本号
+        /// 插件版本号
         /// </summary>
         public abstract Version Version { get; }
 

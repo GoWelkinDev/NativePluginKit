@@ -9,7 +9,7 @@ using System.Text;
 namespace NativePluginKit.SourceGenerators
 {
     /// <summary>
-    /// 读取 HostApiTable 上标注的 [HostApi] 字段，自动生成对应的插件侧 API 类。
+    /// 读取 HostApiTable 上标注的 [HostApi] 字段，自动生成对应的插件侧 API 类
     /// </summary>
     [Generator(LanguageNames.CSharp)]
     public class HostApiGenerator : IIncrementalGenerator
@@ -178,7 +178,7 @@ namespace NativePluginKit.SourceGenerators
             sb.AppendLine("        {");
             sb.AppendLine("            var api = PluginContext.CurrentApi;");
 
-            // 参数编组：IntPtr ← string
+            // 将 string 参数编组为 IntPtr
             var tmpVars = new List<string>();
             for (int i = 0; i < publicParams.Length; i++)
             {
@@ -212,7 +212,7 @@ namespace NativePluginKit.SourceGenerators
                 sb.AppendLine("            {");
             }
 
-            // 缩进：try 内部多一级
+            // try 内部缩进比外部多一级
             string indent = needsTryFinally ? "                " : "            ";
 
             // 调用参数
@@ -229,7 +229,7 @@ namespace NativePluginKit.SourceGenerators
                     callArgs.Add(pub.Name);
             }
 
-            // 函数指针类型：delegate* unmanaged<TP1, TP2, ..., TRET>
+            // 函数指针类型为 delegate* unmanaged<TP1, TP2, ..., TRET>
             var fpParts = new List<string>();
             foreach (var p in nativeParams)
                 fpParts.Add(p.Type.ToDisplayString());

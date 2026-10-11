@@ -6,29 +6,29 @@ namespace NativePluginKit.Features.Cards
     /// <see cref="Card"/> 的手写扩展部分
     /// 提供强类型枚举返回和更自然的调用形式
     /// </summary>
-    public static unsafe partial class Card
+    public static partial class Card
     {
         /// <summary>
-        /// 卡牌攻击属性（强类型）
+        /// 卡牌攻击属性
         /// </summary>
         public static CardAttackType GetAttackTypeEnum(string name)
             => (CardAttackType)GetAttackType(name);
 
         /// <summary>
-        /// 卡牌类型（强类型）
+        /// 卡牌类型
         /// </summary>
         public static CardCategory GetCardTypeEnum(string name)
             => (CardCategory)GetCardType(name);
 
         /// <summary>
-        /// 卡牌效果的状态类别（强类型）
+        /// 卡牌效果的状态类别
         /// </summary>
         public static EffectCategory GetAppliedEffectCategoryEnum(string name, int index)
             => (EffectCategory)GetAppliedEffectCategory(name, index);
 
         /// <summary>
-        /// 一次性返回卡牌的所有效果（按顺序）
-        /// 每个元素是一个 (EffectId, Name, Category) 元组
+        /// 一次性按顺序返回卡牌的所有效果
+        /// 每个元素是一个 <c>(EffectId, Name, Category)</c> 元组
         /// </summary>
         public static CardEffectInfo[] GetAppliedEffects(string name)
         {

@@ -22,12 +22,12 @@
         public string MethodName { get; }
 
         /// <summary>
-        /// 原生签名委托（参数为 IntPtr 等非托管类型）
+        /// 原生签名委托，参数为 IntPtr 等非托管类型
         /// </summary>
         public Type NativeDelegate { get; }
 
         /// <summary>
-        /// 公共签名委托（参数为 string 等托管类型），可选，缺省时与原生一致
+        /// 公共签名委托，参数为 string 等托管类型，缺省时与原生一致
         /// </summary>
         public Type? PublicDelegate { get; }
 

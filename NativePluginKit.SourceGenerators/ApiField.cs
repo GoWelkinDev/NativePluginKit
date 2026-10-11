@@ -3,7 +3,7 @@
 namespace NativePluginKit.SourceGenerators
 {
     /// <summary>
-    /// 描述一个标注了 [HostApi] 的字段的元数据。
+    /// 描述一个标注了 [HostApi] 的字段的元数据
     /// </summary>
     internal readonly struct ApiField
     {

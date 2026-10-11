@@ -9,7 +9,7 @@ namespace NativePluginKit.Features.Entities
     public static unsafe partial class Entity
     {
         /// <summary>
-        /// 读取指定索引处的实体 Id。越界时返回默认值
+        /// 读取指定索引处的实体 Id, 越界时返回默认值
         /// </summary>
         public static EntityId GetEntityIdAt(int index)
         {
@@ -46,8 +46,6 @@ namespace NativePluginKit.Features.Entities
             }
             return result;
         }
-
-        // ====== 便捷重载 ======
 
         public static bool Contains(EntityId id) => Contains(id.Low, id.High);
 

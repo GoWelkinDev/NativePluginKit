@@ -5,6 +5,7 @@ namespace NativePluginKit.Events
 {
     /// <summary>
     /// 每个事件数据的前 8 字节固定为此结构
+    /// 用于描述事件类型与载荷大小
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct EventHeader
@@ -13,67 +14,95 @@ namespace NativePluginKit.Events
         public int DataSize;
     }
 
+    /// <summary>
+    /// 插件加载完成后触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct PluginLoadedEvent
     {
         public EventHeader Header;
-        public IntPtr PluginNamePtr;   // UTF-8
-        public IntPtr VersionPtr;      // UTF-8
+        public IntPtr PluginNamePtr;
+        public IntPtr VersionPtr;
     }
 
+    /// <summary>
+    /// 场景切换时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct SceneEvent
     {
         public EventHeader Header;
-        public IntPtr ScenePathPtr;    // UTF-8
+        public IntPtr ScenePathPtr;
     }
 
+    /// <summary>
+    /// 剧情时间线开始或结束时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TimelineEvent
     {
         public EventHeader Header;
-        public IntPtr TimelineNamePtr; // UTF-8
+        public IntPtr TimelineNamePtr;
         public bool IsBattle;
     }
 
+    /// <summary>
+    /// 剧情时间线信号触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TimelineSignalEvent
     {
         public EventHeader Header;
-        public IntPtr SignalNamePtr;   // UTF-8
+        public IntPtr SignalNamePtr;
     }
 
+    /// <summary>
+    /// 战斗开始或结束时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct BattleEvent
     {
         public EventHeader Header;
-        /// <summary>0 = 开始 / 失败，1 = 胜利</summary>
         public int Victory;
     }
 
+    /// <summary>
+    /// 战斗过程中产生的消息事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct BattleMessageEvent
     {
         public EventHeader Header;
-        public IntPtr MessagePtr;      // UTF-8
+        public IntPtr MessagePtr;
     }
 
+    /// <summary>
+    /// 回合开始或结束时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TurnEvent
     {
         public EventHeader Header;
+
         public int Turn;
     }
 
+    /// <summary>
+    /// 卡牌被抽到请求打出打出或弃置时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct CardEvent
     {
         public EventHeader Header;
+
         public ObjectIdNative OwnerEntityId;
-        public IntPtr CardNamePtr;     // UTF-8，CardData.Name
-        public ObjectIdNative TargetEntityId;   // 仅在 CardPlayed 时有效
+        public IntPtr CardNamePtr;
+        public ObjectIdNative TargetEntityId;
     }
 
+    /// <summary>
+    /// 实体受到伤害时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct EntityDamagedEvent
     {
@@ -81,13 +110,16 @@ namespace NativePluginKit.Events
         public ObjectIdNative EntityId;
         public int RawDamage;
         public int HpDamage;
-        public int AttackType;         // AttackType enum
+        public int AttackType;
         public int RemainingHP;
         public bool Dodged;
         public int ShieldAbsorbed;
         public int ArmorAbsorbed;
     }
 
+    /// <summary>
+    /// 实体死亡时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct EntityDiedEvent
     {
@@ -95,6 +127,9 @@ namespace NativePluginKit.Events
         public ObjectIdNative EntityId;
     }
 
+    /// <summary>
+    /// 实体属性发生变化时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct EntityUpdatedEvent
     {
@@ -104,13 +139,16 @@ namespace NativePluginKit.Events
         public int CurrentCost;
     }
 
+    /// <summary>
+    /// 效果被施加或到期时触发的事件载荷
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct EffectEvent
     {
         public EventHeader Header;
         public ObjectIdNative OwnerEntityId;
-        public IntPtr EffectIdPtr;     // UTF-8
-        public IntPtr EffectNamePtr;   // UTF-8
+        public IntPtr EffectIdPtr;
+        public IntPtr EffectNamePtr;
         public int RemainingDuration;
         public int CurrentStacks;
     }
