@@ -50,6 +50,12 @@ namespace NativePluginKit.Loader
         /// </remarks>
         public bool LoadPlugin(string dllPath)
         {
+            if (_plugins.Any(p => string.Equals(p.DllPath, dllPath, StringComparison.OrdinalIgnoreCase)))
+            {
+                LogWriter($"Plugin already loaded: {dllPath}");
+                return false;
+            }
+
             if (!NativeLibrary.TryLoad(dllPath, out IntPtr hModule))
             {
                 LogWriter($"Failed to load {dllPath}");
@@ -104,13 +110,6 @@ namespace NativePluginKit.Loader
             {
                 initFunc(apiPtr);
             }
-            catch (Exception ex)
-            {
-                LogWriter($"Exception during OnInit of '{info.GetName()}': {ex.Message}");
-                Marshal.FreeHGlobal(apiPtr);
-                NativeLibrary.Free(hModule);
-                return false;
-            }
             finally
             {
                 // apiPtr 在插件内部已复制，可安全释放
@@ -142,6 +141,7 @@ namespace NativePluginKit.Loader
             string pattern = GetPlatformPattern();
 
             string[] dllFiles = Directory.GetFiles(directoryPath, pattern);
+            Array.Sort(dllFiles, StringComparer.OrdinalIgnoreCase);
 
             foreach (string dllPath in dllFiles)
             {
