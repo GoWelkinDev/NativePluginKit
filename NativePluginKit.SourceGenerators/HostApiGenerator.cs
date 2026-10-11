@@ -1,5 +1,5 @@
-﻿// NativePluginKit.SourceGenerators/HostApiGenerator.cs
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -62,7 +62,35 @@ namespace NativePluginKit.SourceGenerators
                 cls,
                 method,
                 nativeType,
-                publicType ?? nativeType);
+                publicType ?? nativeType,
+                GetXmlDocComment(ctx.TargetNode));
+        }
+
+        private static string? GetXmlDocComment(SyntaxNode node)
+        {
+            // TargetNode 是 VariableDeclaratorSyntax 则向上找 FieldDeclarationSyntax
+            var fieldDecl = node.FirstAncestorOrSelf<FieldDeclarationSyntax>();
+            if (fieldDecl is null) return null;
+
+            var lines = new List<string>();
+            foreach (var trivia in fieldDecl.GetLeadingTrivia())
+            {
+                if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia)
+                    || trivia.IsKind(SyntaxKind.MultiLineDocumentationCommentTrivia))
+                {
+                    foreach (var raw in trivia.ToFullString().Split('\n'))
+                    {
+                        var line = raw.TrimEnd('\r');
+                        lines.Add(line.TrimStart());
+                    }
+                }
+            }
+
+            while (lines.Count > 0 && string.IsNullOrWhiteSpace(lines[lines.Count - 1]))
+                lines.RemoveAt(lines.Count - 1);
+
+            var text = string.Join("\n", lines);
+            return text.Length == 0 ? null : text;
         }
 
         private static void Emit(SourceProductionContext ctx, ImmutableArray<ApiField> fields)
@@ -137,6 +165,14 @@ namespace NativePluginKit.SourceGenerators
             string retTypeStr = returnsVoid ? "void" : publicRet.ToDisplayString();
             var paramList = string.Join(", ", publicParams.Select(p =>
                 $"{p.Type.ToDisplayString()} {p.Name}"));
+
+            if (f.Comment is { Length: > 0 } comment)
+            {
+                foreach (var raw in f.Comment.Split('\n'))
+                {
+                    sb.Append("        ").AppendLine(raw.TrimEnd('\r'));
+                }
+            }
 
             sb.AppendLine($"        public static {retTypeStr} {f.MethodName}({paramList})");
             sb.AppendLine("        {");

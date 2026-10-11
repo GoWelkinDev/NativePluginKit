@@ -13,6 +13,7 @@ namespace NativePluginKit.SourceGenerators
         public string MethodName { get; }
         public INamedTypeSymbol NativeDelegate { get; }
         public INamedTypeSymbol PublicDelegate { get; }
+        public string? Comment { get; }
 
         public ApiField(
             string fieldName,
@@ -20,7 +21,8 @@ namespace NativePluginKit.SourceGenerators
             string className,
             string methodName,
             INamedTypeSymbol nativeDelegate,
-            INamedTypeSymbol publicDelegate)
+            INamedTypeSymbol publicDelegate,
+            string? comment)
         {
             FieldName = fieldName;
             Namespace = ns;
@@ -28,6 +30,7 @@ namespace NativePluginKit.SourceGenerators
             MethodName = methodName;
             NativeDelegate = nativeDelegate;
             PublicDelegate = publicDelegate;
+            Comment = comment;
         }
     }
 }
