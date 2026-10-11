@@ -24,7 +24,7 @@ namespace HelloWorldPlugin
         public override string Name => "HelloWorldPlugin";
         public override string Description => "Exercises every NativePluginKit API.";
         public override string Author => "GoWelkinDev";
-        public override Version RequiredApiVersion => new(1, 3, 0);
+        public override Version RequiredApiVersion => new(2, 0, 0);
         public override Version Version => new(1, 0, 0);
 
         protected override void OnStart()
