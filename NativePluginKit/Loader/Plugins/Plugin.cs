@@ -13,86 +13,22 @@ namespace NativePluginKit.Loader.Plugins
     public abstract unsafe class Plugin
     {
         private static HostApiTable _api;
-        private static IntPtr _pluginInfoPtr;
-
-        /// <summary>
-        /// 获取宿主程序提供的 API 函数表，插件可通过它调用宿主功能
-        /// </summary>
-        public HostApiTable Api => _api;
-
-        /// <summary>
-        /// 插件名称
-        /// </summary>
-        public abstract string Name { get; }
-
-        /// <summary>
-        /// 插件描述信息
-        /// </summary>
-        public abstract string Description { get; }
-
-        /// <summary>
-        /// 插件作者
-        /// </summary>
-        public abstract string Author { get; }
-
-        /// <summary>
-        /// 插件版本号
-        /// </summary>
-        public abstract Version Version { get; }
-
-        /// <summary>
-        /// 插件所要求的宿主程序API版本
-        /// </summary>
-        public abstract Version RequiredApiVersion { get; }
-
-        /// <summary>
-        /// 在插件静态构造函数中调用，注册插件元数据
-        /// 从传入实例读取属性并分配非托管内存保存 <see cref="PluginInfo"/>
-        /// 该方法确保 <see cref="GetPluginInfo"/> 在 <c>OnInit</c> 之前即可返回有效指针
-        /// </summary>
-        /// <param name="plugin">用于读取元数据的插件实例</param>
-        protected static void SetPluginInfo(Plugin plugin)
-        {
-            var info = new PluginInfo
-            {
-                NamePtr = Marshal.StringToCoTaskMemUTF8(plugin.Name),
-                DescriptionPtr = Marshal.StringToCoTaskMemUTF8(plugin.Description),
-                AuthorPtr = Marshal.StringToCoTaskMemUTF8(plugin.Author),
-                MajorVersion = Math.Max(plugin.Version.Major, 0),
-                MinorVersion = Math.Max(plugin.Version.Minor, 0),
-                BuildVersion = Math.Max(plugin.Version.Build, 0),
-                RequiredApiMajor = Math.Max(plugin.RequiredApiVersion.Major, 0),
-                RequiredApiMinor = Math.Max(plugin.RequiredApiVersion.Minor, 0),
-                RequiredApiBuild = Math.Max(plugin.RequiredApiVersion.Build, 0),
-            };
-
-            _pluginInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf<PluginInfo>());
-            Marshal.StructureToPtr(info, _pluginInfoPtr, false);
-        }
-
-        /// <summary>
-        /// 返回插件信息结构体指针，供宿主程序查询
-        /// </summary>
-        [UnmanagedCallersOnly(EntryPoint = "GetPluginInfo")]
-        public static IntPtr GetPluginInfo()
-        {
-            return _pluginInfoPtr;
-        }
 
         /// <summary>
         /// 由插件入口函数调用，用于初始化插件并保存宿主 API 函数表
         /// 通常在插件DLL的导出函数 <c>OnInit</c> 中调用
         /// </summary>
         /// <param name="hostApiTablePtr">指向 <see cref="HostApiTable"/> 结构体的非托管指针</param>
+        /// <param name="pluginName">插件名称</param>
         /// <param name="instance">要初始化的插件实例</param>
         /// <remarks>
         /// 该方法将非托管结构体转换为托管对象，设置全局API，并触发 <see cref="OnStart"/>
         /// </remarks>
-        protected static void Initialize(IntPtr hostApiTablePtr, Plugin instance)
+        protected static void Initialize(IntPtr hostApiTablePtr, string pluginName, Plugin instance)
         {
             _api = *(HostApiTable*)hostApiTablePtr.ToPointer();
             PluginContext.CurrentApi = _api;
-            PluginContext.PluginName = instance.Name;
+            PluginContext.PluginName = pluginName;
 
             instance.OnStart();
         }

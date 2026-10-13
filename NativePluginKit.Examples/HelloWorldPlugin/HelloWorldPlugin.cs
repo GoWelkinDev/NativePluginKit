@@ -12,6 +12,7 @@ using NativePluginKit.Features.Story;
 using NativePluginKit.Features.Timing;
 using NativePluginKit.Features.Wrappers;
 using NativePluginKit.Loader.Plugins;
+using NativePluginKit.Loader.Plugins.Metadata;
 using System.Runtime.InteropServices;
 
 namespace HelloWorldPlugin
@@ -19,13 +20,13 @@ namespace HelloWorldPlugin
     /// <summary>
     /// 覆盖 NativePluginKit 全部公开接口的示例插件
     /// </summary>
-    public partial class HelloWorldPlugin : Plugin
+    public partial class HelloWorldPlugin : Plugin, IPluginMetadata
     {
-        public override string Name => "HelloWorldPlugin";
-        public override string Description => "Exercises every NativePluginKit API.";
-        public override string Author => "GoWelkinDev";
-        public override Version RequiredApiVersion => new(2, 0, 0);
-        public override Version Version => new(1, 0, 0);
+        public static string Name => "HelloWorldPlugin";
+        public static string Description => "Exercises every NativePluginKit API.";
+        public static string Author => "GoWelkinDev";
+        public static Version RequiredApiVersion => new(2, 0, 0);
+        public static Version Version => new(1, 0, 0);
 
         protected override void OnStart()
         {
