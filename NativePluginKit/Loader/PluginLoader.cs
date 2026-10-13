@@ -3,6 +3,7 @@
 
 using NativePluginKit.Loader.Constants;
 using NativePluginKit.Loader.Plugins.Interop;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace NativePluginKit.Loader
@@ -82,7 +83,7 @@ namespace NativePluginKit.Loader
                 return false;
             }
 
-            PluginInfo info = Marshal.PtrToStructure<PluginInfo>(pluginInfoPtr);
+            PluginInfo info = Unsafe.Read<PluginInfo>((void*)pluginInfoPtr);
 
             // 版本兼容性检查
             Version requiredApi = info.GetRequiredApiVersion();
@@ -107,7 +108,7 @@ namespace NativePluginKit.Loader
 
             // 将结构体指针传递给插件
             IntPtr apiPtr = Marshal.AllocHGlobal(Marshal.SizeOf<HostApiTable>());
-            Marshal.StructureToPtr(Api, apiPtr, false);
+            Unsafe.Write((void*)apiPtr, Api);
 
             try
             {

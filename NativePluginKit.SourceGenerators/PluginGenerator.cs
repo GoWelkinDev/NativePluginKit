@@ -144,11 +144,13 @@ namespace NativePluginKit.SourceGenerators
                     sb.AppendLine($"{indent}        __RegisterPluginMethods();");
                     sb.AppendLine($"{indent}    }}");
                     sb.AppendLine();
-                    sb.AppendLine($"{indent}    static unsafe partial void __RegisterPluginMethods();");
-                    sb.AppendLine();
                 }
 
-                //
+                // 插件方法导出声明
+                sb.AppendLine($"{indent}    static unsafe partial void __RegisterPluginMethods();");
+                sb.AppendLine();
+
+                // OnStop 入口
                 sb.AppendLine($"{indent}    [UnmanagedCallersOnly(EntryPoint = \"OnStop\")]");
                 sb.AppendLine($"{indent}    public static void __GeneratedOnStop()");
                 sb.AppendLine($"{indent}    {{");
@@ -167,7 +169,8 @@ namespace NativePluginKit.SourceGenerators
                 sb.AppendLine($"{indent}}}");
                 if (!string.IsNullOrEmpty(p.Namespace)) sb.AppendLine("}");
 
-                ctx.AddSource($"{p.ClassName}.g.cs", sb.ToString());
+                string prefix = string.IsNullOrEmpty(p.Namespace) ? "" : $"{p.Namespace}.";
+                ctx.AddSource($"{prefix}{p.ClassName}.g.cs", sb.ToString());
             }
         }
 
