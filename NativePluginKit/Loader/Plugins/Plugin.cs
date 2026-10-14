@@ -2,7 +2,6 @@
 // Copyright (c) 2026, GoWelkin Network
 
 using NativePluginKit.Loader.Constants;
-using System.Collections.Concurrent;
 
 namespace NativePluginKit.Loader.Plugins
 {
@@ -13,7 +12,6 @@ namespace NativePluginKit.Loader.Plugins
     public abstract unsafe class Plugin
     {
         private static HostApiTable _api;
-        private static readonly ConcurrentDictionary<string, PluginRef> _refs = new();
 
         /// <summary>
         /// 由插件入口函数调用，用于初始化插件并保存宿主 API 函数表
@@ -33,14 +31,6 @@ namespace NativePluginKit.Loader.Plugins
 
             instance.OnStart();
         }
-
-        /// <summary>
-        /// 获取指定插件的引用句柄
-        /// 同名插件返回同一实例以便方法指针缓存生效
-        /// </summary>
-        /// <param name="pluginName">插件名称</param>
-        public static PluginRef Get(string pluginName)
-            => _refs.GetOrAdd(pluginName, static name => new PluginRef(name));
 
         /// <summary>
         /// 插件启动时调用的抽象方法，子类必须实现具体的初始化逻辑

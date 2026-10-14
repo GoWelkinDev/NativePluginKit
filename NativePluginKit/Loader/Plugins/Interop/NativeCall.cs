@@ -5,13 +5,13 @@ using NativePluginKit.Features.Plugins;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 
-namespace NativePluginKit.Loader.Plugins
+namespace NativePluginKit.Loader.Plugins.Interop
 {
     /// <summary>
     /// 跨插件调用的引用句柄
     /// 持有目标插件名称与已解析的方法指针缓存
     /// </summary>
-    public sealed class PluginRef
+    public sealed class NativeCall
     {
         private readonly ConcurrentDictionary<string, IntPtr> _methodCache = new();
 
@@ -20,7 +20,7 @@ namespace NativePluginKit.Loader.Plugins
         /// </summary>
         public string PluginName { get; }
 
-        internal PluginRef(string pluginName) => PluginName = pluginName;
+        internal NativeCall(string pluginName) => PluginName = pluginName;
 
         /// <summary>
         /// 检查目标插件是否已注册指定方法
@@ -29,7 +29,7 @@ namespace NativePluginKit.Loader.Plugins
         public bool HasMethod(string method) => PluginMethods.Get(PluginName, method) != IntPtr.Zero;
 
         /// <summary>
-        /// 解析方法指针首次跨 ABI 查询后续从本地缓存读取
+        /// 解析方法指针，首次跨 ABI 查询，后续从本地缓存读取
         /// </summary>
         /// <param name="method">方法名称</param>
         /// <exception cref="InvalidOperationException">方法未注册</exception>
@@ -47,5 +47,17 @@ namespace NativePluginKit.Loader.Plugins
             _methodCache[method] = ptr;
             return ptr;
         }
+    }
+}
+
+namespace NativePluginKit.Features.Interop.Generated
+{
+    public static class NativeCallPlaceholder
+    {
+        public static void Invoke(this Loader.Plugins.Interop.NativeCall self, string method, params object[] args)
+            => throw new NotSupportedException($"The specific Invoke overload has not been generated yet ({self.PluginName}.{method}).");
+
+        public static T Invoke<T>(this Loader.Plugins.Interop.NativeCall self, string method, params object[] args)
+            => throw new NotSupportedException($"The specific Invoke overload has not been generated yet ({self.PluginName}.{method}).");
     }
 }
