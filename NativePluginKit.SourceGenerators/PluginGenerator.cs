@@ -101,6 +101,7 @@ namespace NativePluginKit.SourceGenerators
                 sb.AppendLine("using System;");
                 sb.AppendLine("using System.Runtime.CompilerServices;");
                 sb.AppendLine("using System.Runtime.InteropServices;");
+                sb.AppendLine("using NativePluginKit.Features.Logger;");
                 sb.AppendLine("using NativePluginKit.Loader.Plugins;");
                 sb.AppendLine("using NativePluginKit.Loader.Plugins.Metadata;");
                 sb.AppendLine();
@@ -118,18 +119,41 @@ namespace NativePluginKit.SourceGenerators
                 sb.AppendLine($"{indent}    private static IntPtr __pluginInfoPtr;");
                 sb.AppendLine();
 
+
+                // TryLogError 方法
+                sb.AppendLine($"{indent}    private static void TryLogError(Exception ex)");
+                sb.AppendLine($"{indent}    {{");
+                sb.AppendLine($"{indent}        try");
+                sb.AppendLine($"{indent}        {{");
+                sb.AppendLine($"{indent}            if (PluginContext.CurrentApi.PrintError != IntPtr.Zero)");
+                sb.AppendLine($"{indent}                Log.PrintError(ex.ToString());");
+                sb.AppendLine($"{indent}        }}");
+                sb.AppendLine($"{indent}        catch");
+                sb.AppendLine($"{indent}        {{");
+                sb.AppendLine($"{indent}        }}");
+                sb.AppendLine($"{indent}    }}");
+                sb.AppendLine();
+
                 // GetPluginInfo 入口
                 sb.AppendLine($"{indent}    [UnmanagedCallersOnly(EntryPoint = \"GetPluginInfo\")]");
                 sb.AppendLine($"{indent}    public static IntPtr __GeneratedGetPluginInfo()");
                 sb.AppendLine($"{indent}    {{");
-                sb.AppendLine($"{indent}        if (__pluginInfoPtr == IntPtr.Zero)");
-                sb.AppendLine($"{indent}            __pluginInfoPtr = PluginInfoBuilder.Build(");
-                sb.AppendLine($"{indent}                {p.ClassName}.Name,");
-                sb.AppendLine($"{indent}                {p.ClassName}.Description,");
-                sb.AppendLine($"{indent}                {p.ClassName}.Author,");
-                sb.AppendLine($"{indent}                {p.ClassName}.Version,");
-                sb.AppendLine($"{indent}                {p.ClassName}.RequiredApiVersion);");
-                sb.AppendLine($"{indent}        return __pluginInfoPtr;");
+                sb.AppendLine($"{indent}        try");
+                sb.AppendLine($"{indent}        {{");
+                sb.AppendLine($"{indent}            if (__pluginInfoPtr == IntPtr.Zero)");
+                sb.AppendLine($"{indent}                __pluginInfoPtr = PluginInfoBuilder.Build(");
+                sb.AppendLine($"{indent}                    {p.ClassName}.Name,");
+                sb.AppendLine($"{indent}                    {p.ClassName}.Description,");
+                sb.AppendLine($"{indent}                    {p.ClassName}.Author,");
+                sb.AppendLine($"{indent}                    {p.ClassName}.Version,");
+                sb.AppendLine($"{indent}                    {p.ClassName}.RequiredApiVersion);");
+                sb.AppendLine($"{indent}            return __pluginInfoPtr;");
+                sb.AppendLine($"{indent}        }}");
+                sb.AppendLine($"{indent}        catch (Exception ex)");
+                sb.AppendLine($"{indent}        {{");
+                sb.AppendLine($"{indent}            TryLogError(ex);");
+                sb.AppendLine($"{indent}            return IntPtr.Zero;");
+                sb.AppendLine($"{indent}        }}");
                 sb.AppendLine($"{indent}    }}");
                 sb.AppendLine();
 
@@ -139,9 +163,17 @@ namespace NativePluginKit.SourceGenerators
                     sb.AppendLine($"{indent}    [UnmanagedCallersOnly(EntryPoint = \"OnInit\")]");
                     sb.AppendLine($"{indent}    public static void __GeneratedOnInit(IntPtr hostApiTablePtr)");
                     sb.AppendLine($"{indent}    {{");
-                    sb.AppendLine($"{indent}        __generatedInstance = new {p.ClassName}();");
-                    sb.AppendLine($"{indent}        Initialize(hostApiTablePtr, {p.ClassName}.Name, __generatedInstance);");
-                    sb.AppendLine($"{indent}        __RegisterPluginMethods();");
+                    sb.AppendLine($"{indent}        try");
+                    sb.AppendLine($"{indent}        {{");
+                    sb.AppendLine($"{indent}            __generatedInstance = new {p.ClassName}();");
+                    sb.AppendLine($"{indent}            Initialize(hostApiTablePtr, {p.ClassName}.Name, __generatedInstance);");
+                    sb.AppendLine($"{indent}            __RegisterPluginMethods();");
+                    sb.AppendLine($"{indent}        }}");
+                    sb.AppendLine($"{indent}        catch (Exception ex)");
+                    sb.AppendLine($"{indent}        {{");
+                    sb.AppendLine($"{indent}            __generatedInstance = null;");
+                    sb.AppendLine($"{indent}            TryLogError(ex);");
+                    sb.AppendLine($"{indent}        }}");
                     sb.AppendLine($"{indent}    }}");
                     sb.AppendLine();
                 }
@@ -157,6 +189,10 @@ namespace NativePluginKit.SourceGenerators
                 sb.AppendLine($"{indent}        try");
                 sb.AppendLine($"{indent}        {{");
                 sb.AppendLine($"{indent}            __generatedInstance?.OnStop();");
+                sb.AppendLine($"{indent}        }}");
+                sb.AppendLine($"{indent}        catch (Exception ex)");
+                sb.AppendLine($"{indent}        {{");
+                sb.AppendLine($"{indent}            TryLogError(ex);");
                 sb.AppendLine($"{indent}        }}");
                 sb.AppendLine($"{indent}        finally");
                 sb.AppendLine($"{indent}        {{");
