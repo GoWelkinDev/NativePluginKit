@@ -21,7 +21,7 @@ namespace NativePluginKit.Loader.Plugins.Interop
             {
                 if(!_slots.TryGetValue(plugin, out var slot))
                 {
-                    slot = new PluginSlot(plugin);
+                    slot = new PluginSlot();
                     _slots[plugin] = slot;
                 }
                 slot.Methods[method] = fnPtr;
@@ -70,6 +70,17 @@ namespace NativePluginKit.Loader.Plugins.Interop
                 _slots.Remove(plugin);
             }
             finally { _lock.ExitWriteLock(); }
+        }
+
+        /// <summary>
+        /// 单个插件在宿主侧的方法注册槽位
+        /// </summary>
+        private sealed class PluginSlot
+        {
+            /// <summary>
+            /// 方法名到非托管函数指针的映射
+            /// </summary>
+            internal Dictionary<string, IntPtr> Methods { get; } = new();
         }
     }
 }
