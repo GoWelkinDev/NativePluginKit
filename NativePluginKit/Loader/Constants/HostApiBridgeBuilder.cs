@@ -136,164 +136,101 @@ namespace NativePluginKit.Loader.Constants
         }
 
         /// <summary>
-        /// 创建填充了函数指针的 <see cref="HostApiTable"/> 实例
-        /// 所有参数由宿主通过 <c>[UnmanagedCallersOnly]</c> 方法取函数指针后传入
+        /// 从宿主实现的 <see cref="IHostApi"/> 构建 <see cref="HostApiTable"/>
         /// </summary>
-        /// <returns>包含非托管函数指针的API表结构体</returns>
-        public static HostApiTable Create(
-            FreeStringDelegate freeString,
-            RegisterPluginMethodDelegate registerPluginMethod,
-            UnregisterPluginMethodDelegate unregisterPluginMethod,
-            GetPluginMethodDelegate getPluginMethod,
-
-            GetStringDelegate getCurrentScenePath,
-
-            PrintLogDelegate printLog,
-            PrintLogDelegate printWarning,
-            FreeStringDelegate printError,
-            FreeStringDelegate logDebug,
-
-            GetStringDelegate getPluginsDirectory,
-
-            GetDoubleDelegate getTimeSinceStartup,
-
-            RegisterEventDelegate registerEvent,
-            UnregisterEventDelegate unregisterEvent,
-
-            GetStringDelegate getCurrentTimelineName,
-            GetBoolDelegate isBattle,
-
-            GetIntDelegate cardGetCount,
-            GetStringFromIntDelegate cardGetNameAt,
-            GetBoolFromStringDelegate cardContains,
-            GetStringFromStringDelegate cardGetDisplayName,
-            GetStringFromStringDelegate cardGetDescription,
-            GetStringFromStringDelegate cardGetImageName,
-            GetIntFromStringDelegate cardGetCost,
-            GetIntFromStringDelegate cardGetBaseAttack,
-            GetIntFromStringDelegate cardGetMaxStack,
-            GetIntFromStringDelegate cardGetWeight,
-            GetIntFromStringDelegate cardGetAttackType,
-            GetIntFromStringDelegate cardGetCardType,
-
-            GetIntFromStringDelegate cardGetAppliedEffectCount,
-            GetStringFromStringIntDelegate cardGetAppliedEffectId,
-            GetStringFromStringIntDelegate cardGetAppliedEffectName,
-            GetIntFromStringIntDelegate cardGetAppliedEffectCategory,
-            GetIntFromStringIntDelegate cardGetAppliedEffectDuration,
-            GetBoolFromStringIntDelegate cardGetAppliedEffectIsStackable,
-            GetIntFromStringIntDelegate cardGetAppliedEffectMaxStacks,
-            GetFloatFromStringIntDelegate cardGetAppliedEffectParam1,
-            GetFloatFromStringIntDelegate cardGetAppliedEffectParam2,
-
-            GetIntDelegate entityGetCount,
-            GetEntityIdAtDelegate entityGetIdAt,
-            GetBoolFromIdDelegate entityContains,
-
-            GetStringFromIdDelegate entityGetName,
-            GetStringFromIdDelegate entityGetDisplayName,
-            GetStringFromIdDelegate entityGetImagePath,
-
-            GetIntFromIdDelegate entityGetMaxHP,
-            GetIntFromIdDelegate entityGetCurrentHP,
-            GetIntFromIdDelegate entityGetAttackPower,
-            GetIntFromIdDelegate entityGetDodgeChance,
-            GetIntFromIdDelegate entityGetShieldValue,
-            GetIntFromIdDelegate entityGetArmorValue,
-            GetIntFromIdDelegate entityGetCurrentCost,
-            GetIntFromIdDelegate entityGetMaxCost,
-
-            GetBoolFromIdDelegate entityIsAlive,
-            GetBoolFromIdDelegate entityIsDead,
-            GetBoolFromIdDelegate entityCanAct,
-            GetBoolFromIdDelegate entityIsPlayer,
-            GetBoolFromIdDelegate entityIsMob,
-
-            GetIntFromIdDelegate entityGetEffectCount,
-            GetStringFromIdIntDelegate entityGetEffectId,
-            GetStringFromIdIntDelegate entityGetEffectName,
-            GetIntFromIdIntDelegate entityGetEffectCategory,
-            GetIntFromIdIntDelegate entityGetEffectRemainingDuration,
-            GetIntFromIdIntDelegate entityGetEffectCurrentStacks,
-            GetIntFromIdIntDelegate entityGetEffectMaxStacks)
+        /// <param name="api">宿主实现的接口实例</param>
+        /// <returns>包含非托管函数指针的 API 表结构体</returns>
+        public static HostApiTable Create(IHostApi api)
         {
             return new HostApiTable
             {
-                FreeString = Ptr(freeString),
-                PluginMethods_Register = Ptr(registerPluginMethod),
-                PluginMethods_Unregister = Ptr(unregisterPluginMethod),
-                PluginMethods_Get = Ptr(getPluginMethod),
+                FreeString = Ptr<FreeStringDelegate>(api.FreeString),
+                PluginMethods_Register = Ptr<RegisterPluginMethodDelegate>(static (namePtr, methodPtr, fnPtr) =>
+                    PluginMethodRegistry.Register(
+                        Marshal.PtrToStringUTF8(namePtr) ?? "",
+                        Marshal.PtrToStringUTF8(methodPtr) ?? "",
+                        fnPtr) ? 1 : 0),
 
-                Scene_GetCurrentScenePath = Ptr(getCurrentScenePath),
+                PluginMethods_Unregister = Ptr<UnregisterPluginMethodDelegate>(static (namePtr, methodPtr) =>
+                    PluginMethodRegistry.Unregister(
+                        Marshal.PtrToStringUTF8(namePtr) ?? "",
+                        Marshal.PtrToStringUTF8(methodPtr) ?? "") ? 1 : 0),
 
-                PrintLog = Ptr(printLog),
-                PrintWarning = Ptr(printWarning),
-                PrintError = Ptr(printError),
-                LogDebug = Ptr(logDebug),
+                PluginMethods_Get = Ptr<GetPluginMethodDelegate>(static (namePtr, methodPtr) =>
+                    PluginMethodRegistry.Get(
+                        Marshal.PtrToStringUTF8(namePtr) ?? "",
+                        Marshal.PtrToStringUTF8(methodPtr) ?? "")),
 
-                Config_GetPluginsDirectory = Ptr(getPluginsDirectory),
+                Scene_GetCurrentScenePath = Ptr<GetStringDelegate>(api.GetCurrentScenePath),
 
-                Timing_GetTimeSinceStartup = Ptr(getTimeSinceStartup),
+                PrintLog = Ptr<PrintLogDelegate>(api.PrintLog),
+                PrintWarning = Ptr<PrintLogDelegate>(api.PrintWarning),
+                PrintError = Ptr<PrintLogDelegate>(api.PrintError),
+                LogDebug = Ptr<PrintLogDelegate>(api.LogDebug),
 
-                RegisterEventCallback = Ptr(registerEvent),
-                UnregisterEventCallback = Ptr(unregisterEvent),
+                Config_GetPluginsDirectory = Ptr<GetStringDelegate>(api.GetPluginsDirectory),
 
-                Story_GetCurrentTimelineName = Ptr(getCurrentTimelineName),
-                Story_IsBattle = Ptr(isBattle),
+                Timing_GetTimeSinceStartup = Ptr<GetDoubleDelegate>(api.GetTimeSinceStartup),
 
-                Card_GetCardCount = Ptr(cardGetCount),
-                Card_GetCardNameAt = Ptr(cardGetNameAt),
-                Card_Contains = Ptr(cardContains),
-                Card_GetDisplayName = Ptr(cardGetDisplayName),
-                Card_GetDescription = Ptr(cardGetDescription),
-                Card_GetImageName = Ptr(cardGetImageName),
-                Card_GetCost = Ptr(cardGetCost),
-                Card_GetBaseAttack = Ptr(cardGetBaseAttack),
-                Card_GetMaxStack = Ptr(cardGetMaxStack),
-                Card_GetWeight = Ptr(cardGetWeight),
-                Card_GetAttackType = Ptr(cardGetAttackType),
-                Card_GetCardType = Ptr(cardGetCardType),
+                RegisterEventCallback = Ptr<RegisterEventDelegate>(api.RegisterEvent),
+                UnregisterEventCallback = Ptr<UnregisterEventDelegate>(api.UnregisterEvent),
 
-                Card_GetAppliedEffectCount = Ptr(cardGetAppliedEffectCount),
-                Card_GetAppliedEffectId = Ptr(cardGetAppliedEffectId),
-                Card_GetAppliedEffectName = Ptr(cardGetAppliedEffectName),
-                Card_GetAppliedEffectCategory = Ptr(cardGetAppliedEffectCategory),
-                Card_GetAppliedEffectDuration = Ptr(cardGetAppliedEffectDuration),
-                Card_GetAppliedEffectIsStackable = Ptr(cardGetAppliedEffectIsStackable),
-                Card_GetAppliedEffectMaxStacks = Ptr(cardGetAppliedEffectMaxStacks),
-                Card_GetAppliedEffectParam1 = Ptr(cardGetAppliedEffectParam1),
-                Card_GetAppliedEffectParam2 = Ptr(cardGetAppliedEffectParam2),
+                Story_GetCurrentTimelineName = Ptr<GetStringDelegate>(api.GetCurrentTimelineName),
+                Story_IsBattle = Ptr<GetBoolDelegate>(api.IsBattle),
 
-                Entity_GetCount = Ptr(entityGetCount),
-                Entity_GetIdAt = Ptr(entityGetIdAt),
-                Entity_Contains = Ptr(entityContains),
+                Card_GetCardCount = Ptr<GetIntDelegate>(api.CardGetCount),
+                Card_GetCardNameAt = Ptr<GetStringFromIntDelegate>(api.CardGetNameAt),
+                Card_Contains = Ptr<GetBoolFromStringDelegate>(api.CardContains),
+                Card_GetDisplayName = Ptr<GetStringFromStringDelegate>(api.CardGetDisplayName),
+                Card_GetDescription = Ptr<GetStringFromStringDelegate>(api.CardGetDescription),
+                Card_GetImageName = Ptr<GetStringFromStringDelegate>(api.CardGetImageName),
+                Card_GetCost = Ptr<GetIntFromStringDelegate>(api.CardGetCost),
+                Card_GetBaseAttack = Ptr<GetIntFromStringDelegate>(api.CardGetBaseAttack),
+                Card_GetMaxStack = Ptr<GetIntFromStringDelegate>(api.CardGetMaxStack),
+                Card_GetWeight = Ptr<GetIntFromStringDelegate>(api.CardGetWeight),
+                Card_GetAttackType = Ptr<GetIntFromStringDelegate>(api.CardGetAttackType),
+                Card_GetCardType = Ptr<GetIntFromStringDelegate>(api.CardGetCardType),
 
-                Entity_GetName = Ptr(entityGetName),
-                Entity_GetDisplayName = Ptr(entityGetDisplayName),
-                Entity_GetImagePath = Ptr(entityGetImagePath),
+                Card_GetAppliedEffectCount = Ptr<GetIntFromStringDelegate>(api.CardGetAppliedEffectCount),
+                Card_GetAppliedEffectId = Ptr<GetStringFromStringIntDelegate>(api.CardGetAppliedEffectId),
+                Card_GetAppliedEffectName = Ptr<GetStringFromStringIntDelegate>(api.CardGetAppliedEffectName),
+                Card_GetAppliedEffectCategory = Ptr<GetIntFromStringIntDelegate>(api.CardGetAppliedEffectCategory),
+                Card_GetAppliedEffectDuration = Ptr<GetIntFromStringIntDelegate>(api.CardGetAppliedEffectDuration),
+                Card_GetAppliedEffectIsStackable = Ptr<GetBoolFromStringIntDelegate>(api.CardGetAppliedEffectIsStackable),
+                Card_GetAppliedEffectMaxStacks = Ptr<GetIntFromStringIntDelegate>(api.CardGetAppliedEffectMaxStacks),
+                Card_GetAppliedEffectParam1 = Ptr<GetFloatFromStringIntDelegate>(api.CardGetAppliedEffectParam1),
+                Card_GetAppliedEffectParam2 = Ptr<GetFloatFromStringIntDelegate>(api.CardGetAppliedEffectParam2),
 
-                Entity_GetMaxHP = Ptr(entityGetMaxHP),
-                Entity_GetCurrentHP = Ptr(entityGetCurrentHP),
-                Entity_GetAttackPower = Ptr(entityGetAttackPower),
-                Entity_GetDodgeChance = Ptr(entityGetDodgeChance),
-                Entity_GetShieldValue = Ptr(entityGetShieldValue),
-                Entity_GetArmorValue = Ptr(entityGetArmorValue),
-                Entity_GetCurrentCost = Ptr(entityGetCurrentCost),
-                Entity_GetMaxCost = Ptr(entityGetMaxCost),
+                Entity_GetCount = Ptr<GetIntDelegate>(api.EntityGetCount),
+                Entity_GetIdAt = Ptr<GetEntityIdAtDelegate>(api.EntityGetIdAt),
+                Entity_Contains = Ptr<GetBoolFromIdDelegate>(api.EntityContains),
 
-                Entity_IsAlive = Ptr(entityIsAlive),
-                Entity_IsDead = Ptr(entityIsDead),
-                Entity_CanAct = Ptr(entityCanAct),
-                Entity_IsPlayer = Ptr(entityIsPlayer),
-                Entity_IsMob = Ptr(entityIsMob),
+                Entity_GetName = Ptr<GetStringFromIdDelegate>(api.EntityGetName),
+                Entity_GetDisplayName = Ptr<GetStringFromIdDelegate>(api.EntityGetDisplayName),
+                Entity_GetImagePath = Ptr<GetStringFromIdDelegate>(api.EntityGetImagePath),
 
-                Entity_GetEffectCount = Ptr(entityGetEffectCount),
-                Entity_GetEffectId = Ptr(entityGetEffectId),
-                Entity_GetEffectName = Ptr(entityGetEffectName),
-                Entity_GetEffectCategory = Ptr(entityGetEffectCategory),
-                Entity_GetEffectRemainingDuration = Ptr(entityGetEffectRemainingDuration),
-                Entity_GetEffectCurrentStacks = Ptr(entityGetEffectCurrentStacks),
-                Entity_GetEffectMaxStacks = Ptr(entityGetEffectMaxStacks),
+                Entity_GetMaxHP = Ptr<GetIntFromIdDelegate>(api.EntityGetMaxHP),
+                Entity_GetCurrentHP = Ptr<GetIntFromIdDelegate>(api.EntityGetCurrentHP),
+                Entity_GetAttackPower = Ptr<GetIntFromIdDelegate>(api.EntityGetAttackPower),
+                Entity_GetDodgeChance = Ptr<GetIntFromIdDelegate>(api.EntityGetDodgeChance),
+                Entity_GetShieldValue = Ptr<GetIntFromIdDelegate>(api.EntityGetShieldValue),
+                Entity_GetArmorValue = Ptr<GetIntFromIdDelegate>(api.EntityGetArmorValue),
+                Entity_GetCurrentCost = Ptr<GetIntFromIdDelegate>(api.EntityGetCurrentCost),
+                Entity_GetMaxCost = Ptr<GetIntFromIdDelegate>(api.EntityGetMaxCost),
+
+                Entity_IsAlive = Ptr<GetBoolFromIdDelegate>(api.EntityIsAlive),
+                Entity_IsDead = Ptr<GetBoolFromIdDelegate>(api.EntityIsDead),
+                Entity_CanAct = Ptr<GetBoolFromIdDelegate>(api.EntityCanAct),
+                Entity_IsPlayer = Ptr<GetBoolFromIdDelegate>(api.EntityIsPlayer),
+                Entity_IsMob = Ptr<GetBoolFromIdDelegate>(api.EntityIsMob),
+
+                Entity_GetEffectCount = Ptr<GetIntFromIdDelegate>(api.EntityGetEffectCount),
+                Entity_GetEffectId = Ptr<GetStringFromIdIntDelegate>(api.EntityGetEffectId),
+                Entity_GetEffectName = Ptr<GetStringFromIdIntDelegate>(api.EntityGetEffectName),
+                Entity_GetEffectCategory = Ptr<GetIntFromIdIntDelegate>(api.EntityGetEffectCategory),
+                Entity_GetEffectRemainingDuration = Ptr<GetIntFromIdIntDelegate>(api.EntityGetEffectRemainingDuration),
+                Entity_GetEffectCurrentStacks = Ptr<GetIntFromIdIntDelegate>(api.EntityGetEffectCurrentStacks),
+                Entity_GetEffectMaxStacks = Ptr<GetIntFromIdIntDelegate>(api.EntityGetEffectMaxStacks),
             };
         }
     }
