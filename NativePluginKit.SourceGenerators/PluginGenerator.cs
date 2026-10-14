@@ -126,7 +126,7 @@ namespace NativePluginKit.SourceGenerators
                 sb.AppendLine($"{indent}        try");
                 sb.AppendLine($"{indent}        {{");
                 sb.AppendLine($"{indent}            if (PluginContext.CurrentApi.PrintError != IntPtr.Zero)");
-                sb.AppendLine($"{indent}                Log.PrintError(ex.ToString());");
+                sb.AppendLine($"{indent}                Log.PrintError(ExceptionFormatter.Format(ex));");
                 sb.AppendLine($"{indent}        }}");
                 sb.AppendLine($"{indent}        catch");
                 sb.AppendLine($"{indent}        {{");

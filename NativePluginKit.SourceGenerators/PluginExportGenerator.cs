@@ -123,12 +123,12 @@ namespace NativePluginKit.SourceGenerators
                     if (isVoid)
                     {
                         sb.AppendLine($"{indent}        try {{ {m.CsName}({callArgs}); }}");
-                        sb.AppendLine($"{indent}        catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ex); }} catch {{ }} }}");
+                        sb.AppendLine($"{indent}        catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ExceptionFormatter.Format(ex)); }} catch {{ }} }}");
                     }
                     else
                     {
                         sb.AppendLine($"{indent}        try {{ return {m.CsName}({callArgs}); }}");
-                        sb.AppendLine($"{indent}        catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ex); }} catch {{ }} return default; }}");
+                        sb.AppendLine($"{indent}        catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ExceptionFormatter.Format(ex)); }} catch {{ }} return default; }}");
                     }
                     sb.AppendLine($"{indent}    }}");
                     sb.AppendLine();

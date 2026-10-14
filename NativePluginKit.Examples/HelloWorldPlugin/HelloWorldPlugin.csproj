@@ -28,7 +28,7 @@
 		<DebugSymbols>false</DebugSymbols>
 		<DebugType>none</DebugType>
 		<StripSymbols>true</StripSymbols>
-		<StackTraceSupport>false</StackTraceSupport>
+		<StackTraceSupport>true</StackTraceSupport>
 		<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
 		<EventSourceSupport>false</EventSourceSupport>
 		<MetricsSupport>false</MetricsSupport>
