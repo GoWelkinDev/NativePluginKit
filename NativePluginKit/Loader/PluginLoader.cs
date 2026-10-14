@@ -168,14 +168,7 @@ namespace NativePluginKit.Loader
                 if (NativeLibrary.TryGetExport(handle.ModuleHandle, "OnStop", out IntPtr stopPtr))
                 {
                     var stopFunc = (delegate* unmanaged<void>)stopPtr;
-                    try
-                    {
-                        stopFunc();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogWriter($"Exception during OnStop of '{handle.Info.GetName()}': {ex.Message}");
-                    }
+                    stopFunc();
                 }
 
                 NativeLibrary.Free(handle.ModuleHandle);
