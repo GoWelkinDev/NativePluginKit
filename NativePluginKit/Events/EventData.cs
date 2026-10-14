@@ -26,6 +26,9 @@ namespace NativePluginKit.Events
         public EventHeader Header;
         public IntPtr PluginNamePtr;
         public IntPtr VersionPtr;
+
+        public readonly string PluginName => StringNative.FromPtr(PluginNamePtr);
+        public readonly string Version => StringNative.FromPtr(VersionPtr);
     }
 
     /// <summary>
@@ -36,6 +39,8 @@ namespace NativePluginKit.Events
     {
         public EventHeader Header;
         public IntPtr ScenePathPtr;
+
+        public readonly string ScenePath => StringNative.FromPtr(ScenePathPtr);
     }
 
     /// <summary>
@@ -47,6 +52,8 @@ namespace NativePluginKit.Events
         public EventHeader Header;
         public IntPtr TimelineNamePtr;
         public bool IsBattle;
+
+        public readonly string TimelineName => StringNative.FromPtr(TimelineNamePtr);
     }
 
     /// <summary>
@@ -57,6 +64,8 @@ namespace NativePluginKit.Events
     {
         public EventHeader Header;
         public IntPtr SignalNamePtr;
+
+        public readonly string SignalName => StringNative.FromPtr(SignalNamePtr);
     }
 
     /// <summary>
@@ -77,6 +86,8 @@ namespace NativePluginKit.Events
     {
         public EventHeader Header;
         public IntPtr MessagePtr;
+
+        public readonly string Message => StringNative.FromPtr(MessagePtr);
     }
 
     /// <summary>
@@ -101,6 +112,10 @@ namespace NativePluginKit.Events
         public ObjectIdNative OwnerEntityId;
         public IntPtr CardNamePtr;
         public ObjectIdNative TargetEntityId;
+
+        public readonly EntityId Owner => OwnerEntityId.ToEntityId();
+        public readonly string CardName => StringNative.FromPtr(CardNamePtr);
+        public readonly EntityId Target => TargetEntityId.ToEntityId();
     }
 
     /// <summary>
@@ -118,6 +133,8 @@ namespace NativePluginKit.Events
         public bool Dodged;
         public int ShieldAbsorbed;
         public int ArmorAbsorbed;
+
+        public readonly EntityId Entity => EntityId.ToEntityId();
     }
 
     /// <summary>
@@ -128,6 +145,8 @@ namespace NativePluginKit.Events
     {
         public EventHeader Header;
         public ObjectIdNative EntityId;
+
+        public readonly EntityId Entity => EntityId.ToEntityId();
     }
 
     /// <summary>
@@ -140,6 +159,8 @@ namespace NativePluginKit.Events
         public ObjectIdNative EntityId;
         public int CurrentHP;
         public int CurrentCost;
+
+        public readonly EntityId Entity => EntityId.ToEntityId();
     }
 
     /// <summary>
@@ -154,5 +175,9 @@ namespace NativePluginKit.Events
         public IntPtr EffectNamePtr;
         public int RemainingDuration;
         public int CurrentStacks;
+
+        public readonly EntityId Owner => OwnerEntityId.ToEntityId();
+        public readonly string EffectId => StringNative.FromPtr(EffectIdPtr);
+        public readonly string EffectName => StringNative.FromPtr(EffectNamePtr);
     }
 }

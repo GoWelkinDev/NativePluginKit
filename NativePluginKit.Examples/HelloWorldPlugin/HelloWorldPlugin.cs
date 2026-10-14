@@ -13,7 +13,6 @@ using NativePluginKit.Features.Timing;
 using NativePluginKit.Features.Wrappers;
 using NativePluginKit.Loader.Plugins;
 using NativePluginKit.Loader.Plugins.Metadata;
-using System.Runtime.InteropServices;
 
 namespace HelloWorldPlugin
 {
@@ -50,7 +49,7 @@ namespace HelloWorldPlugin
             Log.PrintLog("HelloWorldPlugin stopped.");
         }
 
-        private static void TestLogger()
+        private void TestLogger()
         {
             Log.PrintLog("[Log] PrintLog");
             Log.PrintWarning("[Log] PrintWarning");
@@ -58,26 +57,26 @@ namespace HelloWorldPlugin
             Log.Debug("[Log] Debug");
         }
 
-        private static void TestTiming()
+        private void TestTiming()
         {
             double t = Timing.GetTimeSinceStartup();
             Log.PrintLog($"[Timing] GetTimeSinceStartup = {t:F3}s");
         }
 
-        private static void TestConfig()
+        private void TestConfig()
         {
             string pluginDir = Config.GetPluginsDirectory();
 
             Log.PrintLog($"[Config] PluginsDirectory     = {pluginDir}");
         }
 
-        private static void TestScene()
+        private void TestScene()
         {
             string scene = Scene.GetCurrentScenePath();
             Log.PrintLog($"[Scene] CurrentScenePath = {scene}");
         }
 
-        private static void TestCards()
+        private void TestCards()
         {
             int count = Card.GetCardCount();
             Log.PrintLog($"[Card] GetCardCount = {count}");
@@ -116,7 +115,7 @@ namespace HelloWorldPlugin
             }
         }
 
-        private static void TestEntities()
+        private void TestEntities()
         {
             int count = Entity.GetEntityCount();
             Log.PrintLog($"[Entity] GetEntityCount = {count}");
@@ -157,7 +156,7 @@ namespace HelloWorldPlugin
             }
         }
 
-        private static void TestStory()
+        private void TestStory()
         {
             string timeline = Story.GetCurrentTimelineName();
             bool inBattle = Story.IsBattle();
@@ -165,7 +164,7 @@ namespace HelloWorldPlugin
             Log.PrintLog($"[Story] IsBattle = {inBattle}");
         }
 
-        private static void SubscribeAllEvents()
+        private void SubscribeAllEvents()
         {
             EventBus.On<SceneEvent>(EventType.SceneChanging, OnSceneChanging);
             EventBus.On<SceneEvent>(EventType.SceneChanged, OnSceneChanged);
@@ -197,7 +196,7 @@ namespace HelloWorldPlugin
             Log.PrintLog("[EventBus] subscribed to 19 events");
         }
 
-        private static void UnsubscribeAllEvents()
+        private void UnsubscribeAllEvents()
         {
             EventBus.Off<SceneEvent>(EventType.SceneChanging, OnSceneChanging);
             EventBus.Off<SceneEvent>(EventType.SceneChanged, OnSceneChanged);
@@ -225,65 +224,65 @@ namespace HelloWorldPlugin
             EventBus.Off<EffectEvent>(EventType.EffectExpired, OnEffectExpired);
         }
 
-        private static void OnSceneChanging(SceneEvent e)
-            => Log.PrintLog($"[Event] SceneChanging -> {Ptr(e.ScenePathPtr)}");
+        private void OnSceneChanging(SceneEvent e)
+            => Log.PrintLog($"[Event] SceneChanging -> {e.ScenePath}");
 
-        private static void OnSceneChanged(SceneEvent e)
-            => Log.PrintLog($"[Event] SceneChanged -> {Ptr(e.ScenePathPtr)}");
+        private void OnSceneChanged(SceneEvent e)
+            => Log.PrintLog($"[Event] SceneChanged -> {e.ScenePath}");
 
-        private static void OnTimelineStarted(TimelineEvent e)
-            => Log.PrintLog($"[Event] TimelineStarted -> {Ptr(e.TimelineNamePtr)} (battle={e.IsBattle})");
+        private void OnTimelineStarted(TimelineEvent e)
+            => Log.PrintLog($"[Event] TimelineStarted -> {e.TimelineName} (battle={e.IsBattle})");
 
-        private static void OnTimelineEnded(TimelineEvent e)
-            => Log.PrintLog($"[Event] TimelineEnded -> {Ptr(e.TimelineNamePtr)} (battle={e.IsBattle})");
+        private void OnTimelineEnded(TimelineEvent e)
+            => Log.PrintLog($"[Event] TimelineEnded -> {e.TimelineName} (battle={e.IsBattle})");
 
-        private static void OnTimelineSignal(TimelineSignalEvent e)
-            => Log.PrintLog($"[Event] TimelineSignal -> {Ptr(e.SignalNamePtr)}");
+        private void OnTimelineSignal(TimelineSignalEvent e)
+            => Log.PrintLog($"[Event] TimelineSignal -> {e.SignalName}");
 
-        private static void OnBattleStarted(BattleEvent e)
+        private void OnBattleStarted(BattleEvent e)
             => Log.PrintLog($"[Event] BattleStarted");
 
-        private static void OnBattleEnded(BattleEvent e)
+        private void OnBattleEnded(BattleEvent e)
             => Log.PrintLog($"[Event] BattleEnded -> victory={e.Victory == 1}");
 
-        private static void OnTurnStarted(TurnEvent e)
+        private void OnTurnStarted(TurnEvent e)
             => Log.PrintLog($"[Event] TurnStarted -> turn {e.Turn}");
 
-        private static void OnTurnEnded(TurnEvent e)
+        private void OnTurnEnded(TurnEvent e)
             => Log.PrintLog($"[Event] TurnEnded -> turn {e.Turn}");
 
-        private static void OnBattleMessage(BattleMessageEvent e)
-            => Log.PrintLog($"[Event] BattleMessage -> {Ptr(e.MessagePtr)}");
+        private void OnBattleMessage(BattleMessageEvent e)
+            => Log.PrintLog($"[Event] BattleMessage -> {e.Message}");
 
-        private static void OnCardDrawn(CardEvent e)
+        private void OnCardDrawn(CardEvent e)
         {
-            var owner = ToEntityId(e.OwnerEntityId);
-            Log.PrintLog($"[Event] CardDrawn -> owner={owner} card={Ptr(e.CardNamePtr)}");
+            var owner = e.Owner;
+            Log.PrintLog($"[Event] CardDrawn -> owner={owner} card={e.CardName}");
         }
 
-        private static void OnCardPlayRequested(CardEvent e)
+        private void OnCardPlayRequested(CardEvent e)
         {
-            var owner = ToEntityId(e.OwnerEntityId);
-            var target = ToEntityId(e.TargetEntityId);
-            Log.PrintLog($"[Event] CardPlayRequested -> owner={owner} card={Ptr(e.CardNamePtr)} target={target}");
+            var owner = e.Owner;
+            var target = e.Target;
+            Log.PrintLog($"[Event] CardPlayRequested -> owner={owner} card={e.CardName} target={target}");
         }
 
-        private static void OnCardPlayed(CardEvent e)
+        private void OnCardPlayed(CardEvent e)
         {
-            var owner = ToEntityId(e.OwnerEntityId);
-            var target = ToEntityId(e.TargetEntityId);
-            Log.PrintLog($"[Event] CardPlayed -> owner={owner} card={Ptr(e.CardNamePtr)} target={target}");
+            var owner = e.Owner;
+            var target = e.Target;
+            Log.PrintLog($"[Event] CardPlayed -> owner={owner} card={e.CardName} target={target}");
         }
 
-        private static void OnCardDiscarded(CardEvent e)
+        private void OnCardDiscarded(CardEvent e)
         {
-            var owner = ToEntityId(e.OwnerEntityId);
-            Log.PrintLog($"[Event] CardDiscarded -> owner={owner} card={Ptr(e.CardNamePtr)}");
+            var owner = e.Owner;
+            Log.PrintLog($"[Event] CardDiscarded -> owner={owner} card={e.CardName}");
         }
 
-        private static void OnEntityDamaged(EntityDamagedEvent e)
+        private void OnEntityDamaged(EntityDamagedEvent e)
         {
-            var id = ToEntityId(e.EntityId);
+            var id = e.Entity;
             Log.PrintLog(
                 $"[Event] EntityDamaged -> {id}" +
                 $" | raw={e.RawDamage} hp={e.HpDamage}" +
@@ -292,42 +291,33 @@ namespace HelloWorldPlugin
                 $" | shield={e.ShieldAbsorbed} armor={e.ArmorAbsorbed}");
         }
 
-        private static void OnEntityDied(EntityDiedEvent e)
+        private void OnEntityDied(EntityDiedEvent e)
         {
-            var id = ToEntityId(e.EntityId);
+            var id = e.Entity;
             Log.PrintLog($"[Event] EntityDied -> {id}");
         }
 
-        private static void OnEntityUpdated(EntityUpdatedEvent e)
+        private void OnEntityUpdated(EntityUpdatedEvent e)
         {
-            var id = ToEntityId(e.EntityId);
+            var id = e.Entity;
             Log.PrintLog($"[Event] EntityUpdated -> {id} HP={e.CurrentHP} Cost={e.CurrentCost}");
         }
 
-        private static void OnEffectApplied(EffectEvent e)
+        private void OnEffectApplied(EffectEvent e)
         {
-            var owner = ToEntityId(e.OwnerEntityId);
+            var owner = e.Owner;
             Log.PrintLog(
                 $"[Event] EffectApplied -> owner={owner}" +
-                $" effect={Ptr(e.EffectIdPtr)} ({Ptr(e.EffectNamePtr)})" +
+                $" effect={e.EffectId} ({e.EffectName})" +
                 $" remaining={e.RemainingDuration} stacks={e.CurrentStacks}");
         }
 
-        private static void OnEffectExpired(EffectEvent e)
+        private void OnEffectExpired(EffectEvent e)
         {
-            var owner = ToEntityId(e.OwnerEntityId);
+            var owner = e.Owner;
             Log.PrintLog(
                 $"[Event] EffectExpired -> owner={owner}" +
-                $" effect={Ptr(e.EffectIdPtr)} ({Ptr(e.EffectNamePtr)})");
-        }
-
-        private static EntityId ToEntityId(ObjectIdNative n)
-            => new(n.Low, n.High);
-
-        private static string Ptr(IntPtr p)
-        {
-            if (p == IntPtr.Zero) return string.Empty;
-            return Marshal.PtrToStringUTF8(p) ?? string.Empty;
+                $" effect={e.EffectId} ({e.EffectName})");
         }
     }
 }

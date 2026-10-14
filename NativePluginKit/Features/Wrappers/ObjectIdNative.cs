@@ -10,5 +10,7 @@ namespace NativePluginKit.Features.Wrappers
     {
         public ulong Low;
         public ulong High;
+
+        public readonly EntityId ToEntityId() => new(Low, High);
     }
 }
