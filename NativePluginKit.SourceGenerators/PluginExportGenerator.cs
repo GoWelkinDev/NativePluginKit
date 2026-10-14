@@ -14,7 +14,7 @@ namespace NativePluginKit.SourceGenerators
     [Generator(LanguageNames.CSharp)]
     public class PluginExportGenerator : IIncrementalGenerator
     {
-        private const string AttrName = "NativePluginKit.Loader.Plugins.Interop.PluginExportAttribute";
+        private const string AttrName = "NativePluginKit.Loader.Plugins.PluginExportAttribute";
         private const string PluginBaseType = "NativePluginKit.Loader.Plugins.Plugin";
 
         public void Initialize(IncrementalGeneratorInitializationContext context)

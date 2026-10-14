@@ -3,7 +3,7 @@
 
 using System.Collections.Concurrent;
 
-namespace NativePluginKit.Loader.Plugins.Interop
+namespace NativePluginKit.Loader.Plugins.NativeInterop
 {
     /// <summary>
     /// 跨插件原生调用入口

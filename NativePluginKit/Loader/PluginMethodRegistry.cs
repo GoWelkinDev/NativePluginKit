@@ -1,7 +1,7 @@
 ﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
 // SPDX-License-Identifier: BSD-3-Clause
 
-namespace NativePluginKit.Loader.Plugins.Interop
+namespace NativePluginKit.Loader
 {
     /// <summary>
     /// 宿主侧维护的跨插件方法注册表

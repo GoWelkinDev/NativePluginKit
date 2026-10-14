@@ -5,7 +5,7 @@ using NativePluginKit.Features.Plugins;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 
-namespace NativePluginKit.Loader.Plugins.Interop
+namespace NativePluginKit.Loader.Plugins.NativeInterop
 {
     /// <summary>
     /// 跨插件调用的引用句柄
@@ -50,14 +50,14 @@ namespace NativePluginKit.Loader.Plugins.Interop
     }
 }
 
-namespace NativePluginKit.Features.Interop.Generated
+namespace NativePluginKit.Features.NativeInterop.Generated
 {
     public static class NativeCallPlaceholder
     {
-        public static void Invoke(this Loader.Plugins.Interop.NativeCall self, string method, params object[] args)
+        public static void Invoke(this Loader.Plugins.NativeInterop.NativeCall self, string method, params object[] args)
             => throw new NotSupportedException($"The specific Invoke overload has not been generated yet ({self.PluginName}.{method}).");
 
-        public static T Invoke<T>(this Loader.Plugins.Interop.NativeCall self, string method, params object[] args)
+        public static T Invoke<T>(this Loader.Plugins.NativeInterop.NativeCall self, string method, params object[] args)
             => throw new NotSupportedException($"The specific Invoke overload has not been generated yet ({self.PluginName}.{method}).");
     }
 }
