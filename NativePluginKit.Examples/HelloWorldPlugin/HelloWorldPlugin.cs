@@ -3,13 +3,11 @@
 
 using NativePluginKit.Events;
 using NativePluginKit.Features.Cards;
-using NativePluginKit.Features.Config;
+using NativePluginKit.Features.Configs;
 using NativePluginKit.Features.Entities;
 using NativePluginKit.Features.Events;
 using NativePluginKit.Features.Logger;
-using NativePluginKit.Features.Scene;
 using NativePluginKit.Features.Story;
-using NativePluginKit.Features.Timing;
 using NativePluginKit.Features.Wrappers;
 using NativePluginKit.Loader.Plugins;
 using NativePluginKit.Loader.Plugins.Metadata;
@@ -34,7 +32,6 @@ namespace HelloWorldPlugin
             TestLogger();
             TestTiming();
             TestConfig();
-            TestScene();
             TestCards();
             TestEntities();
             TestStory();
@@ -59,7 +56,7 @@ namespace HelloWorldPlugin
 
         private void TestTiming()
         {
-            double t = Timing.GetTimeSinceStartup();
+            double t = Config.GetTimeSinceStartup();
             Log.PrintLog($"[Timing] GetTimeSinceStartup = {t:F3}s");
         }
 
@@ -68,12 +65,6 @@ namespace HelloWorldPlugin
             string pluginDir = Config.GetPluginsDirectory();
 
             Log.PrintLog($"[Config] PluginsDirectory     = {pluginDir}");
-        }
-
-        private void TestScene()
-        {
-            string scene = Scene.GetCurrentScenePath();
-            Log.PrintLog($"[Scene] CurrentScenePath = {scene}");
         }
 
         private void TestCards()

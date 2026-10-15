@@ -14,11 +14,11 @@ namespace NativePluginKit.Loader.Plugins
         /// 获取当前插件使用的宿主 API 函数表
         /// 该属性在插件初始化时被设置
         /// </summary>
-        public static HostApiTable CurrentApi { get; internal set; }
+        public static HostApiTable CurrentApi { get; set; }
 
         /// <summary>
         /// 当前插件名称
         /// </summary>
-        public static string PluginName { get; internal set; } = "Unknown";
+        public static string PluginName { get; set; } = "Unknown";
     }
 }
