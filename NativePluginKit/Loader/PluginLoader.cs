@@ -13,8 +13,6 @@ namespace NativePluginKit.Loader
     /// </summary>
     public unsafe class PluginLoader
     {
-        private readonly List<PluginHandle> _plugins = new();
-
         /// <summary>
         /// 主程序暴露给插件的 API 函数表
         /// </summary>
@@ -54,7 +52,8 @@ namespace NativePluginKit.Loader
         /// </remarks>
         public bool LoadPlugin(string dllPath)
         {
-            if (_plugins.Any(p => string.Equals(p.DllPath, dllPath, StringComparison.OrdinalIgnoreCase)))
+            if (PluginRegistry.GetAllRecords().Any(e =>
+                string.Equals(e.DllPath, dllPath, StringComparison.OrdinalIgnoreCase)))
             {
                 LogWriter($"Plugin already loaded: {dllPath}");
                 return false;
@@ -85,24 +84,42 @@ namespace NativePluginKit.Loader
 
             PluginInfo info = Unsafe.Read<PluginInfo>((void*)pluginInfoPtr);
 
+            // 阻止插件使用保留前缀命名
+            string name = info.GetName();
+
+            if (name.StartsWith("__", StringComparison.Ordinal))
+            {
+                LogWriter($"Plugin name '{name}' uses reserved prefix. Plugin rejected.");
+                NativeLibrary.Free(hModule);
+                return false;
+            }
+
+            // 创建注册表条目
+            if (PluginRegistry.CreateRecord(name, dllPath, info, hModule) is null)
+            {
+                LogWriter($"Plugin name '{name}' already registered. Plugin rejected.");
+                NativeLibrary.Free(hModule);
+                return false;
+            }
+
             // 版本兼容性检查
             Version requiredApi = info.GetRequiredApiVersion();
             if (requiredApi.Major != CurrentApiVersion.Major || requiredApi.Minor > CurrentApiVersion.Minor)
             {
                 LogWriter($"Plugin '{info.GetName()}' requires API v{requiredApi}, but host provides v{CurrentApiVersion}. Plugin rejected.");
-                NativeLibrary.Free(hModule);
-                return false;
+                return FailAndFree(name, hModule);
             }
 
             // 获取 OnInit
             if (!NativeLibrary.TryGetExport(hModule, "OnInit", out IntPtr initPtr))
             {
                 LogWriter("OnInit not found");
-                NativeLibrary.Free(hModule);
-                return false;
+                return FailAndFree(name, hModule);
             }
 
             LogWriter($"Loading plugin: {info.GetName()} v{info.GetVersion()} by {info.GetAuthor()}");
+
+            PluginRegistry.TrySetState(name, PluginStates.Initializing);
 
             var initFunc = (delegate* unmanaged<IntPtr, void>)initPtr;
 
@@ -120,12 +137,7 @@ namespace NativePluginKit.Loader
                 Marshal.FreeHGlobal(apiPtr);
             }
 
-            _plugins.Add(new PluginHandle
-            {
-                DllPath = dllPath,
-                ModuleHandle = hModule,
-                Info = info
-            });
+            PluginRegistry.TrySetState(name, PluginStates.Active);
 
             return true;
         }
@@ -158,25 +170,45 @@ namespace NativePluginKit.Loader
         /// </summary>
         public void UnloadAll()
         {
-            foreach (var handle in _plugins)
+            foreach (var record in PluginRegistry.GetAllRecords())
             {
-                var name = handle.Info.GetName();
+                if (record.IsSynthetic) continue;
+
+                string name = record.Name;
+                IntPtr hModule = record.ModuleHandle;
+
+                if (record.State == PluginStates.Failed)
+                {
+                    LogWriter($"Skipping failed plugin: {name}");
+                    PluginRegistry.ClearPlugin(name);
+                    continue;
+                }
+
                 LogWriter($"Unloading plugin: {name}");
 
-                PluginMethodRegistry.ClearPlugin(name);
+                PluginRegistry.TrySetState(name, PluginStates.Stopping);
 
-                if (NativeLibrary.TryGetExport(handle.ModuleHandle, "OnStop", out IntPtr stopPtr))
+                if (NativeLibrary.TryGetExport(hModule, "OnStop", out IntPtr stopPtr))
                 {
                     var stopFunc = (delegate* unmanaged<void>)stopPtr;
                     stopFunc();
                 }
 
-                NativeLibrary.Free(handle.ModuleHandle);
-                LogWriter($"Unloaded plugin: {handle.Info.GetName()}");
-            }
+                PluginRegistry.TrySetState(name, PluginStates.Stopped);
+                NativeLibrary.Free(hModule);
+                PluginRegistry.ClearPlugin(name);
 
-            _plugins.Clear();
+                LogWriter($"Unloaded plugin: {name}");
+            }
         }
+
+        private static bool FailAndFree(string name, IntPtr hModule)
+        {
+            PluginRegistry.TryMarkFailed(name);
+            NativeLibrary.Free(hModule);
+            return false;
+        }
+
 
         private static string GetPlatformPattern()
         {
@@ -184,12 +216,5 @@ namespace NativePluginKit.Loader
             if (OperatingSystem.IsMacOS()) return "*.dylib";
             return "*.so";
         }
-    }
-
-    internal class PluginHandle
-    {
-        public string DllPath = string.Empty;
-        public IntPtr ModuleHandle;
-        public PluginInfo Info;
     }
 }

@@ -59,18 +59,18 @@ namespace NativePluginKit.Loader.Constants
             {
                 FreeString = Ptr<FreeStringDelegate>(api.FreeString),
                 PluginMethods_Register = Ptr<RegisterPluginMethodDelegate>(static (namePtr, methodPtr, fnPtr) =>
-                    PluginMethodRegistry.Register(
+                    PluginRegistry.Register(
                         Marshal.PtrToStringUTF8(namePtr) ?? "",
                         Marshal.PtrToStringUTF8(methodPtr) ?? "",
                         fnPtr) ? 1 : 0),
 
                 PluginMethods_Unregister = Ptr<UnregisterPluginMethodDelegate>(static (namePtr, methodPtr) =>
-                    PluginMethodRegistry.Unregister(
+                    PluginRegistry.Unregister(
                         Marshal.PtrToStringUTF8(namePtr) ?? "",
                         Marshal.PtrToStringUTF8(methodPtr) ?? "") ? 1 : 0),
 
                 PluginMethods_Get = Ptr<GetPluginMethodDelegate>(static (namePtr, methodPtr) =>
-                    PluginMethodRegistry.Get(
+                    PluginRegistry.Get(
                         Marshal.PtrToStringUTF8(namePtr) ?? "",
                         Marshal.PtrToStringUTF8(methodPtr) ?? "")),
 
