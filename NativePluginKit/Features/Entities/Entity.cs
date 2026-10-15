@@ -7,8 +7,7 @@ using NativePluginKit.Loader.Plugins.NativeInterop;
 namespace NativePluginKit.Features.Entities
 {
     /// <summary>
-    /// <see cref="Entity"/> 的手写扩展部分
-    /// 提供基于 <see cref="EntityId"/> 的便捷重载
+    /// 实体数据查询
     /// </summary>
     public static unsafe class Entity
     {

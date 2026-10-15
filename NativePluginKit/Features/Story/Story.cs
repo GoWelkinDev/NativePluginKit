@@ -5,6 +5,9 @@ using NativePluginKit.Loader.Plugins.NativeInterop;
 
 namespace NativePluginKit.Features.Story
 {
+    /// <summary>
+    /// 剧情时间线状态查询
+    /// </summary>
     public static class Story
     {
         private static readonly NativeCall Host = NativeCalls.Get("__host__:Story");

@@ -7,8 +7,7 @@ using NativePluginKit.Loader.Plugins.NativeInterop;
 namespace NativePluginKit.Features.Cards
 {
     /// <summary>
-    /// <see cref="Card"/> 的手写扩展部分
-    /// 提供强类型枚举返回和更自然的调用形式
+    /// 卡牌数据查询
     /// </summary>
     public static class Card
     {
