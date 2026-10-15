@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 GoWelkin Network
 // SPDX-License-Identifier: BSD-3-Clause
 
+using NativePluginKit.Events.Handlers;
 using System.Runtime.InteropServices;
 
 namespace NativePluginKit.Loader.Constants
@@ -78,6 +79,10 @@ namespace NativePluginKit.Loader.Constants
                 PrintError = Ptr<PrintLogDelegate>(api.PrintError),
                 LogDebug = Ptr<PrintLogDelegate>(api.LogDebug),
 
+                RegisterEventCallback = Ptr<RegisterEventDelegate>(static (eventType, callback, userData) =>
+                    EventDispatcher.Register(eventType, callback, userData)),
+                UnregisterEventCallback = Ptr<UnregisterEventDelegate>(static (eventType, callback, userData) =>
+                    EventDispatcher.Unregister(eventType, callback, userData)),
             };
         }
     }
