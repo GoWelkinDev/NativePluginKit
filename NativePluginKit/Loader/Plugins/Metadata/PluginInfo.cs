@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace NativePluginKit.Loader.Constants
+namespace NativePluginKit.Loader.Plugins.Metadata
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct PluginInfo

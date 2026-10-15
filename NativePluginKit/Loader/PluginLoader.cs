@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 using NativePluginKit.Loader.Constants;
+using NativePluginKit.Loader.Plugins.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
