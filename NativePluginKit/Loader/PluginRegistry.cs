@@ -8,7 +8,7 @@ namespace NativePluginKit.Loader
     /// <summary>
     /// 宿主侧插件注册表，承载插件生命周期记录与导出方法表
     /// </summary>
-    public static class PluginRegistry
+    public static partial class PluginRegistry
     {
         private const string SyntheticPrefix = "__";
 
@@ -96,7 +96,7 @@ namespace NativePluginKit.Loader
         /// <param name="method">方法名称</param>
         /// <param name="fnPtr">函数指针</param>
         /// <returns></returns>
-        public static bool Register(string pluginName, string method, IntPtr fnPtr)
+        internal static bool Register(string pluginName, string method, IntPtr fnPtr)
         {
             if (string.IsNullOrEmpty(pluginName) || string.IsNullOrEmpty(method) || fnPtr == IntPtr.Zero)
                 return false;
@@ -125,7 +125,7 @@ namespace NativePluginKit.Loader
         /// <param name="pluginName">插件名称</param>
         /// <param name="method">方法名称</param>
         /// <returns></returns>
-        public static bool Unregister(string pluginName, string method)
+        internal static bool Unregister(string pluginName, string method)
         {
             _lock.EnterWriteLock();
             try 
@@ -142,7 +142,7 @@ namespace NativePluginKit.Loader
         /// <param name="pluginName">插件名称</param>
         /// <param name="method">方法名称</param>
         /// <returns></returns>
-        public static IntPtr Get(string pluginName, string method)
+        internal static IntPtr Get(string pluginName, string method)
         {
             _lock.EnterReadLock();
             try

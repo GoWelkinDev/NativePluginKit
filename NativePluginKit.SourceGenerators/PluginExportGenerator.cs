@@ -93,8 +93,8 @@ namespace NativePluginKit.SourceGenerators
                 sb.AppendLine("using System;");
                 sb.AppendLine("using System.Runtime.CompilerServices;");
                 sb.AppendLine("using System.Runtime.InteropServices;");
+                sb.AppendLine("using NativePluginKit.Loader;");
                 sb.AppendLine("using NativePluginKit.Loader.Plugins;");
-                sb.AppendLine("using NativePluginKit.Features.Plugins;");
                 sb.AppendLine("using NativePluginKit.Features.Logger;");
                 sb.AppendLine();
 
@@ -142,7 +142,7 @@ namespace NativePluginKit.SourceGenerators
                 {
                     var fpParts = new List<string>(m.ParamTypes) { m.ReturnType };
                     string fpType = $"delegate* unmanaged[Cdecl]<{string.Join(", ", fpParts)}>";
-                    sb.AppendLine($"{indent}        PluginMethods.Register(__pluginName, \"{m.ExposedName}\", (IntPtr)({fpType})&__PluginExport_{m.CsName});");
+                    sb.AppendLine($"{indent}        PluginRegistry.RegisterMethodPointer(__pluginName, \"{m.ExposedName}\", (IntPtr)({fpType})&__PluginExport_{m.CsName});");
                 }
                 sb.AppendLine($"{indent}    }}");
 

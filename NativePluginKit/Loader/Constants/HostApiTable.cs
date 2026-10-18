@@ -29,7 +29,7 @@ namespace NativePluginKit.Loader.Constants
         /// <param name="methodName">对外暴露的方法名</param>
         /// <param name="fnPtr">方法对应的非托管函数指针</param>
         /// <returns>注册成功返回 1, 否则返回 0</returns>
-        [HostApi("NativePluginKit.Features.Plugins", "PluginMethods", "Register",
+        [HostApi("NativePluginKit.Loader", "PluginRegistry", "RegisterMethodPointer",
             typeof(RegisterPluginMethodDelegate), typeof(RegisterPluginMethodPublicDelegate))]
         public IntPtr PluginMethods_Register;
 
@@ -39,7 +39,7 @@ namespace NativePluginKit.Loader.Constants
         /// <param name="pluginName">插件名称</param>
         /// <param name="methodName">要移除的方法名</param>
         /// <returns>移除成功返回 1, 否则返回 0</returns>
-        [HostApi("NativePluginKit.Features.Plugins", "PluginMethods", "Unregister",
+        [HostApi("NativePluginKit.Loader", "PluginRegistry", "UnregisterMethodPointer",
             typeof(UnregisterPluginMethodDelegate), typeof(UnregisterPluginMethodPublicDelegate))]
         public IntPtr PluginMethods_Unregister;
 
@@ -49,7 +49,7 @@ namespace NativePluginKit.Loader.Constants
         /// <param name="pluginName">目标插件名称</param>
         /// <param name="methodName">目标方法名</param>
         /// <returns>方法对应的函数指针未找到时返回 <see cref="IntPtr.Zero"/></returns>
-        [HostApi("NativePluginKit.Features.Plugins", "PluginMethods", "Get",
+        [HostApi("NativePluginKit.Loader", "PluginRegistry", "GetMethodPointer",
             typeof(GetPluginMethodDelegate), typeof(GetPluginMethodPublicDelegate))]
         public IntPtr PluginMethods_Get;
 

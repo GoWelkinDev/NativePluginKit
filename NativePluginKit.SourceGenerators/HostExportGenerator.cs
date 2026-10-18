@@ -151,7 +151,7 @@ namespace NativePluginKit.SourceGenerators
                 string fpType = $"delegate* unmanaged[Cdecl]<{string.Join(", ", fpParts)}>";
                 string stubName = $"__HostExport_{SanitizeIdentifier(m.GroupName)}_{m.CsName}";
                 string constName = $"HostKey_{SanitizeIdentifier(m.GroupName)}";
-                sb.AppendLine($"            PluginRegistry.Register({constName}, \"{m.CsName}\", (IntPtr)({fpType})&{stubName});");
+                sb.AppendLine($"            PluginRegistry.RegisterMethodPointer({constName}, \"{m.CsName}\", (IntPtr)({fpType})&{stubName});");
             }
             sb.AppendLine("        }");
 

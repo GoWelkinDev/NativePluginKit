@@ -1,7 +1,6 @@
 ﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
 // SPDX-License-Identifier: BSD-3-Clause
 
-using NativePluginKit.Features.Plugins;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 
@@ -26,7 +25,7 @@ namespace NativePluginKit.Loader.Plugins.NativeInterop
         /// 检查目标插件是否已注册指定方法
         /// </summary>
         /// <param name="method">方法名称</param>
-        public bool HasMethod(string method) => PluginMethods.Get(PluginName, method) != IntPtr.Zero;
+        public bool HasMethod(string method) => PluginRegistry.GetMethodPointer(PluginName, method) != IntPtr.Zero;
 
         /// <summary>
         /// 解析方法指针，首次跨 ABI 查询，后续从本地缓存读取
@@ -39,7 +38,7 @@ namespace NativePluginKit.Loader.Plugins.NativeInterop
             if (_methodCache.TryGetValue(method, out var ptr))
                 return ptr;
 
-            ptr = PluginMethods.Get(PluginName, method);
+            ptr = PluginRegistry.GetMethodPointer(PluginName, method);
             if (ptr == IntPtr.Zero)
                 throw new InvalidOperationException(
                     $"Plugin method '{PluginName}.{method}' is not registered.");
