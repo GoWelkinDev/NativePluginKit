@@ -232,7 +232,7 @@ namespace NativePluginKit.SourceGenerators
                     sb.AppendLine($"{indent}    var __ret = ((delegate* unmanaged[Cdecl]<{sig}>)ptr)({callArgs});");
                     sb.AppendLine($"{indent}    if (__ret == IntPtr.Zero) return (T)(object)string.Empty;");
                     sb.AppendLine($"{indent}    var __str = Marshal.PtrToStringUTF8(__ret) ?? string.Empty;");
-                    sb.AppendLine($"{indent}    NativePluginKit.Features.Strings.Strings.Free(__ret);");
+                    sb.AppendLine($"{indent}    NativePluginKit.Features.Wrappers.StringNative.Free(__ret);");
                     sb.AppendLine($"{indent}    return (T)(object)__str;");
                     sb.AppendLine($"{indent}}}");
                 }

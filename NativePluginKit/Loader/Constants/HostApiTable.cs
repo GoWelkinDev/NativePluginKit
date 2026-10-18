@@ -18,7 +18,7 @@ namespace NativePluginKit.Loader.Constants
         /// 释放由宿主分配的非托管 UTF-8 字符串
         /// </summary>
         /// <param name="ptr">要释放的非托管字符串指针</param>
-        [HostApi("NativePluginKit.Features.Strings", "Strings", "Free",
+        [HostApi("NativePluginKit.Features.Wrappers", "StringNative", "Free",
             typeof(FreeStringDelegate), typeof(FreeStringDelegate))]
         public IntPtr FreeString;
 

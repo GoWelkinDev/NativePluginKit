@@ -21,7 +21,7 @@ namespace NativePluginKit.SourceGenerators
             "NativePluginKit.Loader.Constants.HostApiAttribute";
 
         private const string StringsFreeQualified =
-            "NativePluginKit.Features.Strings.Strings.Free";
+            "NativePluginKit.Features.Wrappers.StringNative.Free";
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {

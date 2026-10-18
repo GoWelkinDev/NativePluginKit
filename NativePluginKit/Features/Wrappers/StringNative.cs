@@ -8,7 +8,7 @@ namespace NativePluginKit.Features.Wrappers
     /// <summary>
     /// 非托管 UTF-8 字符串指针的托管侧读取入口
     /// </summary>
-    public static class StringNative
+    public static partial class StringNative
     {
         /// <summary>
         /// 读取非托管 UTF-8 字符串指针
