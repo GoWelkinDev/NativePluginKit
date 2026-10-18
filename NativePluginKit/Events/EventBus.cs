@@ -1,12 +1,11 @@
 ﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
 // SPDX-License-Identifier: BSD-3-Clause
 
-using NativePluginKit.Events;
 using NativePluginKit.Features.Logger;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace NativePluginKit.Features.Events
+namespace NativePluginKit.Events
 {
     /// <summary>
     /// 插件侧事件订阅入口，屏蔽函数指针与 Marshal 转换等细节，只暴露 <see cref="Action{T}"/> 委托
@@ -15,7 +14,7 @@ namespace NativePluginKit.Features.Events
     /// 内部按事件类型 T 分组，每种 T 使用一个独立的非托管分发器
     /// 由 NativeAOT 为每个封闭泛型类型生成独立实现
     /// </remarks>
-    public static unsafe class EventBus
+    public static unsafe partial class EventBus
     {
         private const DynamicallyAccessedMemberTypes StructRequirements =
             DynamicallyAccessedMemberTypes.PublicConstructors |
@@ -25,18 +24,18 @@ namespace NativePluginKit.Features.Events
         /// 订阅指定类型的事件
         /// </summary>
         /// <typeparam name="T">事件数据结构体，必须是 unmanaged 类型</typeparam>
-        /// <param name="type">事件类型</param>
+        /// <param name="eventType">事件类型</param>
         /// <param name="handler">事件回调，在主线程调用</param>
-        public static void On<[DynamicallyAccessedMembers(StructRequirements)] T>(EventType type, Action<T> handler) where T : unmanaged
+        public static void On<[DynamicallyAccessedMembers(StructRequirements)] T>(int eventType, Action<T> handler) where T : unmanaged
         {
             if (handler is null) return;
 
             lock (Registry<T>.Lock)
             {
-                if (!Registry<T>.Slots.TryGetValue(type, out var slot))
+                if (!Registry<T>.Slots.TryGetValue(eventType, out var slot))
                 {
                     slot = new Registry<T>.Slot();
-                    Registry<T>.Slots[type] = slot;
+                    Registry<T>.Slots[eventType] = slot;
                 }
 
                 if (!slot.Handlers.Contains(handler))
@@ -48,7 +47,7 @@ namespace NativePluginKit.Features.Events
                     slot.Handle = GCHandle.Alloc(converter, GCHandleType.Normal);
                     slot.Registered = true;
 
-                    EventBridge.Register((int)type, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
+                    RegisterCallback(eventType, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
                 }
             }
         }
@@ -57,21 +56,21 @@ namespace NativePluginKit.Features.Events
         /// 取消指定类型事件的订阅
         /// </summary>
         /// <typeparam name="T">事件数据结构体，必须是 unmanaged 类型</typeparam>
-        /// <param name="type">事件类型</param>
+        /// <param name="eventType">事件类型</param>
         /// <param name="handler">要移除的事件回调</param>
-        public static void Off<[DynamicallyAccessedMembers(StructRequirements)] T>(EventType type, Action<T> handler) where T : unmanaged
+        public static void Off<[DynamicallyAccessedMembers(StructRequirements)] T>(int eventType, Action<T> handler) where T : unmanaged
         {
             if (handler is null) return;
 
             lock (Registry<T>.Lock)
             {
-                if (!Registry<T>.Slots.TryGetValue(type, out var slot)) return;
+                if (!Registry<T>.Slots.TryGetValue(eventType, out var slot)) return;
 
                 slot.Handlers.Remove(handler);
 
                 if (slot.Handlers.Count == 0 && slot.Registered)
                 {
-                    EventBridge.Unregister((int)type, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
+                    UnregisterCallback(eventType, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
 
                     if (slot.Handle.IsAllocated) slot.Handle.Free();
                     slot.Registered = false;
@@ -139,7 +138,7 @@ namespace NativePluginKit.Features.Events
 
         private static class Registry<[DynamicallyAccessedMembers(StructRequirements)] T> where T : unmanaged
         {
-            public static readonly Dictionary<EventType, Slot> Slots = new();
+            public static readonly Dictionary<int, Slot> Slots = new();
             public static readonly object Lock = new();
 
             public sealed class Slot

@@ -157,62 +157,62 @@ namespace HelloWorldPlugin
 
         private void SubscribeAllEvents()
         {
-            EventBus.On<SceneEvent>(EventType.SceneChanging, OnSceneChanging);
-            EventBus.On<SceneEvent>(EventType.SceneChanged, OnSceneChanged);
+            EventBus.On<SceneEvent>((int)EventType.SceneChanging, OnSceneChanging);
+            EventBus.On<SceneEvent>((int)EventType.SceneChanged, OnSceneChanged);
 
-            EventBus.On<TimelineEvent>(EventType.TimelineStarted, OnTimelineStarted);
-            EventBus.On<TimelineEvent>(EventType.TimelineEnded, OnTimelineEnded);
-            EventBus.On<TimelineSignalEvent>(EventType.TimelineSignal, OnTimelineSignal);
+            EventBus.On<TimelineEvent>((int)EventType.TimelineStarted, OnTimelineStarted);
+            EventBus.On<TimelineEvent>((int)EventType.TimelineEnded, OnTimelineEnded);
+            EventBus.On<TimelineSignalEvent>((int)EventType.TimelineSignal, OnTimelineSignal);
 
-            EventBus.On<BattleEvent>(EventType.BattleStarted, OnBattleStarted);
-            EventBus.On<BattleEvent>(EventType.BattleEnded, OnBattleEnded);
+            EventBus.On<BattleEvent>((int)EventType.BattleStarted, OnBattleStarted);
+            EventBus.On<BattleEvent>((int)EventType.BattleEnded, OnBattleEnded);
 
-            EventBus.On<TurnEvent>(EventType.TurnStarted, OnTurnStarted);
-            EventBus.On<TurnEvent>(EventType.TurnEnded, OnTurnEnded);
+            EventBus.On<TurnEvent>((int)EventType.TurnStarted, OnTurnStarted);
+            EventBus.On<TurnEvent>((int)EventType.TurnEnded, OnTurnEnded);
 
-            EventBus.On<BattleMessageEvent>(EventType.BattleMessage, OnBattleMessage);
+            EventBus.On<BattleMessageEvent>((int)EventType.BattleMessage, OnBattleMessage);
 
-            EventBus.On<CardEvent>(EventType.CardDrawn, OnCardDrawn);
-            EventBus.On<CardEvent>(EventType.CardPlayRequested, OnCardPlayRequested);
-            EventBus.On<CardEvent>(EventType.CardPlayed, OnCardPlayed);
-            EventBus.On<CardEvent>(EventType.CardDiscarded, OnCardDiscarded);
+            EventBus.On<CardEvent>((int)EventType.CardDrawn, OnCardDrawn);
+            EventBus.On<CardEvent>((int)EventType.CardPlayRequested, OnCardPlayRequested);
+            EventBus.On<CardEvent>((int)EventType.CardPlayed, OnCardPlayed);
+            EventBus.On<CardEvent>((int)EventType.CardDiscarded, OnCardDiscarded);
 
-            EventBus.On<EntityDamagedEvent>(EventType.EntityDamaged, OnEntityDamaged);
-            EventBus.On<EntityDiedEvent>(EventType.EntityDied, OnEntityDied);
-            EventBus.On<EntityUpdatedEvent>(EventType.EntityUpdated, OnEntityUpdated);
+            EventBus.On<EntityDamagedEvent>((int)EventType.EntityDamaged, OnEntityDamaged);
+            EventBus.On<EntityDiedEvent>((int)EventType.EntityDied, OnEntityDied);
+            EventBus.On<EntityUpdatedEvent>((int)EventType.EntityUpdated, OnEntityUpdated);
 
-            EventBus.On<EffectEvent>(EventType.EffectApplied, OnEffectApplied);
-            EventBus.On<EffectEvent>(EventType.EffectExpired, OnEffectExpired);
+            EventBus.On<EffectEvent>((int)EventType.EffectApplied, OnEffectApplied);
+            EventBus.On<EffectEvent>((int)EventType.EffectExpired, OnEffectExpired);
 
             Log.PrintLog("[EventBus] subscribed to 19 events");
         }
 
         private void UnsubscribeAllEvents()
         {
-            EventBus.Off<SceneEvent>(EventType.SceneChanging, OnSceneChanging);
-            EventBus.Off<SceneEvent>(EventType.SceneChanged, OnSceneChanged);
+            EventBus.Off<SceneEvent>((int)EventType.SceneChanging, OnSceneChanging);
+            EventBus.Off<SceneEvent>((int)EventType.SceneChanged, OnSceneChanged);
 
-            EventBus.Off<TimelineEvent>(EventType.TimelineStarted, OnTimelineStarted);
-            EventBus.Off<TimelineEvent>(EventType.TimelineEnded, OnTimelineEnded);
-            EventBus.Off<TimelineSignalEvent>(EventType.TimelineSignal, OnTimelineSignal);
+            EventBus.Off<TimelineEvent>((int)EventType.TimelineStarted, OnTimelineStarted);
+            EventBus.Off<TimelineEvent>((int)EventType.TimelineEnded, OnTimelineEnded);
+            EventBus.Off<TimelineSignalEvent>((int)EventType.TimelineSignal, OnTimelineSignal);
 
-            EventBus.Off<BattleEvent>(EventType.BattleStarted, OnBattleStarted);
-            EventBus.Off<BattleEvent>(EventType.BattleEnded, OnBattleEnded);
-            EventBus.Off<TurnEvent>(EventType.TurnStarted, OnTurnStarted);
-            EventBus.Off<TurnEvent>(EventType.TurnEnded, OnTurnEnded);
-            EventBus.Off<BattleMessageEvent>(EventType.BattleMessage, OnBattleMessage);
+            EventBus.Off<BattleEvent>((int)EventType.BattleStarted, OnBattleStarted);
+            EventBus.Off<BattleEvent>((int)EventType.BattleEnded, OnBattleEnded);
+            EventBus.Off<TurnEvent>((int)EventType.TurnStarted, OnTurnStarted);
+            EventBus.Off<TurnEvent>((int)EventType.TurnEnded, OnTurnEnded);
+            EventBus.Off<BattleMessageEvent>((int)EventType.BattleMessage, OnBattleMessage);
 
-            EventBus.Off<CardEvent>(EventType.CardDrawn, OnCardDrawn);
-            EventBus.Off<CardEvent>(EventType.CardPlayRequested, OnCardPlayRequested);
-            EventBus.Off<CardEvent>(EventType.CardPlayed, OnCardPlayed);
-            EventBus.Off<CardEvent>(EventType.CardDiscarded, OnCardDiscarded);
+            EventBus.Off<CardEvent>((int)EventType.CardDrawn, OnCardDrawn);
+            EventBus.Off<CardEvent>((int)EventType.CardPlayRequested, OnCardPlayRequested);
+            EventBus.Off<CardEvent>((int)EventType.CardPlayed, OnCardPlayed);
+            EventBus.Off<CardEvent>((int)EventType.CardDiscarded, OnCardDiscarded);
 
-            EventBus.Off<EntityDamagedEvent>(EventType.EntityDamaged, OnEntityDamaged);
-            EventBus.Off<EntityDiedEvent>(EventType.EntityDied, OnEntityDied);
-            EventBus.Off<EntityUpdatedEvent>(EventType.EntityUpdated, OnEntityUpdated);
+            EventBus.Off<EntityDamagedEvent>((int)EventType.EntityDamaged, OnEntityDamaged);
+            EventBus.Off<EntityDiedEvent>((int)EventType.EntityDied, OnEntityDied);
+            EventBus.Off<EntityUpdatedEvent>((int)EventType.EntityUpdated, OnEntityUpdated);
 
-            EventBus.Off<EffectEvent>(EventType.EffectApplied, OnEffectApplied);
-            EventBus.Off<EffectEvent>(EventType.EffectExpired, OnEffectExpired);
+            EventBus.Off<EffectEvent>((int)EventType.EffectApplied, OnEffectApplied);
+            EventBus.Off<EffectEvent>((int)EventType.EffectExpired, OnEffectExpired);
         }
 
         private void OnSceneChanging(SceneEvent e)

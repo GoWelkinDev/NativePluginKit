@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 GoWelkin Network
 // SPDX-License-Identifier: BSD-3-Clause
 
-using NativePluginKit.Events.Handlers;
+using NativePluginKit.Events;
 using System.Runtime.InteropServices;
 
 namespace NativePluginKit.Loader.Constants

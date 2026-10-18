@@ -88,7 +88,7 @@ namespace NativePluginKit.Loader.Constants
         /// <param name="callback">回调函数指针签名为 <c>void(int, IntPtr, IntPtr)</c></param>
         /// <param name="userData">用户自定义数据会原样传回回调</param>
         /// <returns>注册成功返回 true</returns>
-        [HostApi("NativePluginKit.Features.Events", "EventBridge", "Register",
+        [HostApi("NativePluginKit.Events", "EventBus", "RegisterCallback",
             typeof(RegisterEventDelegate), typeof(RegisterEventDelegate))]
         public IntPtr RegisterEventCallback;
 
@@ -99,7 +99,7 @@ namespace NativePluginKit.Loader.Constants
         /// <param name="callback">回调函数指针</param>
         /// <param name="userData">注册时传入的用户自定义数据</param>
         /// <returns>取消成功返回 true</returns>
-        [HostApi("NativePluginKit.Features.Events", "EventBridge", "Unregister",
+        [HostApi("NativePluginKit.Events", "EventBus", "UnregisterCallback",
             typeof(UnregisterEventDelegate), typeof(UnregisterEventDelegate))]
         public IntPtr UnregisterEventCallback;
     }
