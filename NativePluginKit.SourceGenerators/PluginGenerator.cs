@@ -167,7 +167,7 @@ namespace NativePluginKit.SourceGenerators
                     sb.AppendLine($"{indent}        {{");
                     sb.AppendLine($"{indent}            __generatedInstance = new {p.ClassName}();");
                     sb.AppendLine($"{indent}            Initialize(hostApiTablePtr, {p.ClassName}.Name, __generatedInstance);");
-                    sb.AppendLine($"{indent}            __RegisterPluginMethods();");
+                    sb.AppendLine($"{indent}            NativePluginKit.Generated.GeneratedMethodExports.Register();");
                     sb.AppendLine($"{indent}        }}");
                     sb.AppendLine($"{indent}        catch (Exception ex)");
                     sb.AppendLine($"{indent}        {{");
@@ -177,10 +177,6 @@ namespace NativePluginKit.SourceGenerators
                     sb.AppendLine($"{indent}    }}");
                     sb.AppendLine();
                 }
-
-                // 插件方法导出声明
-                sb.AppendLine($"{indent}    static unsafe partial void __RegisterPluginMethods();");
-                sb.AppendLine();
 
                 // OnStop 入口
                 sb.AppendLine($"{indent}    [UnmanagedCallersOnly(EntryPoint = \"OnStop\")]");

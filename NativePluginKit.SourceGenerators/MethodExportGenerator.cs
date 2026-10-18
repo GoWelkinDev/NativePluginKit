@@ -11,11 +11,13 @@ using System.Threading;
 
 namespace NativePluginKit.SourceGenerators
 {
+    /// <summary>
+    /// 扫描标有 [MethodExport] 的方法，生成导出存根和注册入口
+    /// </summary>
     [Generator(LanguageNames.CSharp)]
-    public class HostExportGenerator : IIncrementalGenerator
+    public class MethodExportGenerator : IIncrementalGenerator
     {
-        private const string AttrName = "NativePluginKit.Loader.Constants.HostExportAttribute";
-        private const string HostKey = "__host__";
+        private const string AttrName = "NativePluginKit.Loader.Plugins.MethodExportAttribute";
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
@@ -30,20 +32,25 @@ namespace NativePluginKit.SourceGenerators
             context.RegisterSourceOutput(methods, static (spc, list) => Emit(spc, list));
         }
 
-        private static HostExportInfo? Extract(GeneratorAttributeSyntaxContext ctx, CancellationToken ct)
+        private static MethodExportInfo? Extract(GeneratorAttributeSyntaxContext ctx, CancellationToken ct)
         {
             if (ctx.TargetSymbol is not IMethodSymbol method) return null;
             if (!method.IsStatic) return null;
             if (method.DeclaredAccessibility != Accessibility.Public
                 && method.DeclaredAccessibility != Accessibility.Internal) return null;
-
             if (ctx.Attributes.Length == 0) return null;
-            var attr = ctx.Attributes[0];
-            if (attr.ConstructorArguments.Length < 1
-                || attr.ConstructorArguments[0].Value is not string group
-                || string.IsNullOrEmpty(group)) return null;
 
-            // 签名校验
+            var attr = ctx.Attributes[0];
+            string? group = null;
+            foreach (var named in attr.NamedArguments)
+            {
+                if (named.Key == "Group" && named.Value.Value is string g && !string.IsNullOrEmpty(g))
+                {
+                    group = g;
+                    break;
+                }
+            }
+
             if (method.ReturnType.SpecialType != SpecialType.System_Void
                 && !IsBlittable(method.ReturnType))
                 return null;
@@ -51,45 +58,49 @@ namespace NativePluginKit.SourceGenerators
                 if (!IsBlittable(p.Type)) return null;
 
             var containing = method.ContainingType;
-
             var typeChain = new List<string>();
             for (var t = containing; t != null; t = t.ContainingType)
                 typeChain.Insert(0, t.Name);
-            string fullTypePath = string.Join(".", typeChain);
+            string typeName = string.Join(".", typeChain);
 
             string ns = containing.ContainingNamespace.IsGlobalNamespace
                 ? "" : containing.ContainingNamespace.ToDisplayString();
+            string callPath = string.IsNullOrEmpty(ns)
+                ? $"{typeName}.{method.Name}"
+                : $"{ns}.{typeName}.{method.Name}";
 
-            return new HostExportInfo(
+            return new MethodExportInfo(
                 group,
-                fullTypePath,
+                typeName,
                 ns,
+                callPath,
                 method.Name,
                 method.ReturnType.ToDisplayString(),
                 method.Parameters.Select(p => p.Type.ToDisplayString()).ToImmutableArray(),
                 method.Parameters.Select(p => p.Name).ToImmutableArray());
         }
 
-        private static void Emit(SourceProductionContext ctx, ImmutableArray<HostExportInfo> list)
+        private static void Emit(SourceProductionContext ctx, ImmutableArray<MethodExportInfo> list)
         {
-            if (list.IsEmpty) return;
-
-            // 同组内重名检测
-            var seen = new HashSet<string>();
-            foreach (var m in list)
+            if (!list.IsEmpty)
             {
-                if (!seen.Add(m.GroupName + "::" + m.CsName))
+                var seen = new HashSet<string>();
+                foreach (var m in list)
                 {
-                    ctx.ReportDiagnostic(Diagnostic.Create(
-                        new DiagnosticDescriptor(
-                            "NPK301",
-                            "Duplicate host export",
-                            $"Duplicate host export '{m.GroupName}.{m.CsName}'",
-                            "HostExportGenerator",
-                            DiagnosticSeverity.Error,
-                            isEnabledByDefault: true),
-                        Location.None));
-                    return;
+                    string key = (m.GroupName ?? "") + "::" + m.MethodName;
+                    if (!seen.Add(key))
+                    {
+                        ctx.ReportDiagnostic(Diagnostic.Create(
+                            new DiagnosticDescriptor(
+                                "NPK301",
+                                "Duplicate method export",
+                                $"Duplicate export '{m.MethodName}' in group '{m.GroupName ?? "(none)"}'",
+                                "MethodExportGenerator",
+                                DiagnosticSeverity.Error,
+                                isEnabledByDefault: true),
+                            Location.None));
+                        return;
+                    }
                 }
             }
 
@@ -100,65 +111,71 @@ namespace NativePluginKit.SourceGenerators
             sb.AppendLine("using System.Runtime.CompilerServices;");
             sb.AppendLine("using System.Runtime.InteropServices;");
             sb.AppendLine("using NativePluginKit.Loader;");
+            sb.AppendLine("using NativePluginKit.Loader.Plugins;");
             sb.AppendLine("using NativePluginKit.Features.Logger;");
             sb.AppendLine();
             sb.AppendLine("namespace NativePluginKit.Generated");
             sb.AppendLine("{");
-            sb.AppendLine("    public static unsafe class GeneratedHostExports");
+            sb.AppendLine("    internal static unsafe class GeneratedMethodExports");
             sb.AppendLine("    {");
 
-            // 每个 group 一个常量
-            var groups = list.Select(m => m.GroupName).Distinct().ToArray();
-            foreach (var g in groups)
-            {
-                sb.AppendLine($"        private const string HostKey_{SanitizeIdentifier(g)} = \"{HostKey}:{g}\";");
-            }
-            sb.AppendLine();
-
-            // 存根方法
             foreach (var m in list)
             {
                 var paramSig = string.Join(", ",
                     m.ParamTypes.Zip(m.ParamNames, (t, n) => $"{t} {n}"));
                 var callArgs = string.Join(", ", m.ParamNames);
                 bool isVoid = m.ReturnType == "void";
-                string stubName = $"__HostExport_{SanitizeIdentifier(m.GroupName)}_{m.CsName}";
+                string stubName = $"__MethodExport_{SanitizeIdentifier(m.ClassName)}_{SanitizeIdentifier(m.MethodName)}";
 
                 sb.AppendLine($"        [UnmanagedCallersOnly(CallConvs = new[] {{ typeof(CallConvCdecl) }})]");
                 sb.AppendLine($"        public static {m.ReturnType} {stubName}({paramSig})");
                 sb.AppendLine("        {");
-                string fullCall = $"{m.ContainingNs}.{m.ContainingType}.{m.CsName}({callArgs})";
                 if (isVoid)
                 {
-                    sb.AppendLine($"            try {{ {fullCall}; }}");
-                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(ExceptionFormatter.Format(ex)); }} catch {{ }} }}");
+                    sb.AppendLine($"            try {{ {m.CallPath}({callArgs}); }}");
+                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ExceptionFormatter.Format(ex)); }} catch {{ }} }}");
                 }
                 else
                 {
-                    sb.AppendLine($"            try {{ return {fullCall}; }}");
-                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(ExceptionFormatter.Format(ex)); }} catch {{ }} return default; }}");
+                    sb.AppendLine($"            try {{ return {m.CallPath}({callArgs}); }}");
+                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ExceptionFormatter.Format(ex)); }} catch {{ }} return default; }}");
                 }
                 sb.AppendLine("        }");
                 sb.AppendLine();
             }
 
-            // 注册入口
             sb.AppendLine("        public static void Register()");
             sb.AppendLine("        {");
-            foreach (var m in list)
+            if (list.IsEmpty)
             {
-                var fpParts = new List<string>(m.ParamTypes) { m.ReturnType };
-                string fpType = $"delegate* unmanaged[Cdecl]<{string.Join(", ", fpParts)}>";
-                string stubName = $"__HostExport_{SanitizeIdentifier(m.GroupName)}_{m.CsName}";
-                string constName = $"HostKey_{SanitizeIdentifier(m.GroupName)}";
-                sb.AppendLine($"            PluginRegistry.RegisterMethodPointer({constName}, \"{m.CsName}\", (IntPtr)({fpType})&{stubName});");
-            }
-            sb.AppendLine("        }");
+                sb.AppendLine("            // no exports");
+            }else
+            {
+                sb.AppendLine("            var __ns = PluginContext.PluginName;");
+                sb.AppendLine("            if (string.IsNullOrEmpty(__ns) || __ns == \"Unknown\")");
+                sb.AppendLine("                throw new InvalidOperationException(");
+                sb.AppendLine("                    \"PluginContext.PluginName must be set before calling GeneratedMethodExports.Register()\");");
+                sb.AppendLine();
 
+                foreach (var m in list)
+                {
+                    var fpParts = new List<string>(m.ParamTypes) { m.ReturnType };
+                    string fpType = $"delegate* unmanaged[Cdecl]<{string.Join(", ", fpParts)}>";
+                    string stubName = $"__MethodExport_{SanitizeIdentifier(m.ClassName)}_{SanitizeIdentifier(m.MethodName)}";
+
+                    string keyExpr = m.GroupName is null
+                        ? "__ns"
+                        : $"__ns + \":{m.GroupName}\"";
+
+                    sb.AppendLine($"            PluginRegistry.RegisterMethodPointer({keyExpr}, \"{m.MethodName}\", (IntPtr)({fpType})&{stubName});");
+                }
+            }
+
+            sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            ctx.AddSource("GeneratedHostExports.g.cs", sb.ToString());
+            ctx.AddSource("GeneratedMethodExports.g.cs", sb.ToString());
         }
 
         private static string SanitizeIdentifier(string name)
@@ -183,11 +200,12 @@ namespace NativePluginKit.SourceGenerators
                  || t.TypeKind == TypeKind.Struct || t.TypeKind == TypeKind.Enum);
         }
 
-        private readonly record struct HostExportInfo(
-            string GroupName,
-            string ContainingType,
-            string ContainingNs,
-            string CsName,
+        private readonly record struct MethodExportInfo(
+            string? GroupName,
+            string ClassName,
+            string Namespace,
+            string CallPath,
+            string MethodName,
             string ReturnType,
             ImmutableArray<string> ParamTypes,
             ImmutableArray<string> ParamNames);
