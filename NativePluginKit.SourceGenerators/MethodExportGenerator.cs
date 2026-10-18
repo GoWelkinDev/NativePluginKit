@@ -19,6 +19,14 @@ namespace NativePluginKit.SourceGenerators
     {
         private const string AttrName = "NativePluginKit.Loader.Plugins.MethodExportAttribute";
 
+        private static readonly DiagnosticDescriptor DuplicateExportDescriptor = new(
+            "NPK301",
+            "Duplicate method export",
+            "Duplicate export '{0}' in group '{1}'",
+            "MethodExportGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var methods = context.SyntaxProvider.ForAttributeWithMetadataName(
@@ -91,14 +99,10 @@ namespace NativePluginKit.SourceGenerators
                     if (!seen.Add(key))
                     {
                         ctx.ReportDiagnostic(Diagnostic.Create(
-                            new DiagnosticDescriptor(
-                                "NPK301",
-                                "Duplicate method export",
-                                $"Duplicate export '{m.MethodName}' in group '{m.GroupName ?? "(none)"}'",
-                                "MethodExportGenerator",
-                                DiagnosticSeverity.Error,
-                                isEnabledByDefault: true),
-                            Location.None));
+                            DuplicateExportDescriptor,
+                            Location.None,
+                            m.MethodName,
+                            m.GroupName ?? "(none)"));
                         return;
                     }
                 }

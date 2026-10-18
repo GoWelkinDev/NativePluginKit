@@ -23,6 +23,14 @@ namespace NativePluginKit.SourceGenerators
         private const string StringsFreeQualified =
             "NativePluginKit.Features.Wrappers.StringNative.Free";
 
+        private static readonly DiagnosticDescriptor SignatureMismatchDescriptor = new(
+            "NPK002",
+            "Signature mismatch",
+            "Native and public delegates for '{0}' must have the same parameter count",
+            "HostApiGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var fields = context.SyntaxProvider.ForAttributeWithMetadataName(
@@ -138,15 +146,7 @@ namespace NativePluginKit.SourceGenerators
 
             if (nativeParams.Length != publicParams.Length)
             {
-                ctx.ReportDiagnostic(Diagnostic.Create(
-                    new DiagnosticDescriptor(
-                        "NPK002",
-                        "Signature mismatch",
-                        $"Native and public delegates for '{f.MethodName}' must have the same parameter count.",
-                        "HostApiGenerator",
-                        DiagnosticSeverity.Error,
-                        isEnabledByDefault: true),
-                    Location.None));
+                ctx.ReportDiagnostic(Diagnostic.Create(SignatureMismatchDescriptor, Location.None, f.MethodName));
                 return;
             }
 

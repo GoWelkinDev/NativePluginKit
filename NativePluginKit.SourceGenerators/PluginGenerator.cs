@@ -17,6 +17,22 @@ namespace NativePluginKit.SourceGenerators
         private const string PluginBaseType = "NativePluginKit.Loader.Plugins.Plugin";
         private const string PluginMetadataInterface = "NativePluginKit.Loader.Plugins.Metadata.IPluginMetadata";
 
+        private static readonly DiagnosticDescriptor NotPartialDescriptor = new(
+            "PLG001",
+            "Plugin 类必须声明为 partial",
+            "插件类 '{0}' 需要声明为 partial 才能生成引导代码",
+            "SourceGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
+        private static readonly DiagnosticDescriptor NoMetadataDescriptor = new(
+            "PLG002",
+            "Plugin 类必须实现 IPluginMetadata 接口",
+            "插件类 '{0}' 需要实现 IPluginMetadata 接口才能生成引导代码",
+            "SourceGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var candidates = context.SyntaxProvider
@@ -73,25 +89,13 @@ namespace NativePluginKit.SourceGenerators
 
                 if (!p.IsPartial)
                 {
-                    ctx.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor(
-                        "PLG001",
-                        "Plugin 类必须声明为 partial",
-                        $"插件类 '{p.ClassName}' 需要声明为 partial 才能生成引导代码",
-                        "SourceGenerator",
-                        DiagnosticSeverity.Error,
-                        isEnabledByDefault: true), p.Location));
+                    ctx.ReportDiagnostic(Diagnostic.Create(NotPartialDescriptor, p.Location, p.ClassName));
                     continue;
                 }
 
                 if (!p.ImplementsMetadata)
                 {
-                    ctx.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor(
-                        "PLG002",
-                        "Plugin 类必须实现 IPluginMetadata 接口",
-                        $"插件类 '{p.ClassName}' 需要实现 IPluginMetadata 接口才能生成引导代码",
-                        "SourceGenerator",
-                        DiagnosticSeverity.Error,
-                        isEnabledByDefault: true), p.Location));
+                    ctx.ReportDiagnostic(Diagnostic.Create(NoMetadataDescriptor, p.Location, p.ClassName));
                     continue;
                 }
 
