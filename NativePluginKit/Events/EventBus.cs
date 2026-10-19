@@ -1,7 +1,8 @@
 ﻿// SPDX-FileCopyrightText: 2026 GoWelkin Network
 // SPDX-License-Identifier: BSD-3-Clause
 
-using NativePluginKit.Features.Logger;
+using NativePluginKit.Features.Logging;
+using NativePluginKit.Loader.Plugins.NativeInterop;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -19,6 +20,8 @@ namespace NativePluginKit.Events
         private const DynamicallyAccessedMemberTypes StructRequirements =
             DynamicallyAccessedMemberTypes.PublicConstructors |
             DynamicallyAccessedMemberTypes.NonPublicConstructors;
+
+        private static readonly NativeCall Host = NativeCalls.Get("__host__:Events");
 
         /// <summary>
         /// 订阅指定类型的事件
@@ -47,7 +50,7 @@ namespace NativePluginKit.Events
                     slot.Handle = GCHandle.Alloc(converter, GCHandleType.Normal);
                     slot.Registered = true;
 
-                    RegisterCallback(eventType, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
+                    Host.Invoke<bool>("Register", eventType, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
                 }
             }
         }
@@ -70,7 +73,7 @@ namespace NativePluginKit.Events
 
                 if (slot.Handlers.Count == 0 && slot.Registered)
                 {
-                    UnregisterCallback(eventType, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
+                    Host.Invoke<bool>("Unregister", eventType, DispatchPtr, GCHandle.ToIntPtr(slot.Handle));
 
                     if (slot.Handle.IsAllocated) slot.Handle.Free();
                     slot.Registered = false;

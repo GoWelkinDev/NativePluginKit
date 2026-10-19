@@ -3,12 +3,12 @@
 
 using System.Text;
 
-namespace NativePluginKit.Features.Logger
+namespace NativePluginKit.Features.Logging
 {
     /// <summary>
     /// 异常格式化工具
     /// </summary>
-    public static class ExceptionFormatter
+    internal static class ExceptionFormatter
     {
         public static string Format(Exception ex)
             => StripOffsets(ReplaceTypeHandle(ex.ToString()));

@@ -116,7 +116,7 @@ namespace NativePluginKit.SourceGenerators
             sb.AppendLine("using System.Runtime.InteropServices;");
             sb.AppendLine("using NativePluginKit.Loader;");
             sb.AppendLine("using NativePluginKit.Loader.Plugins;");
-            sb.AppendLine("using NativePluginKit.Features.Logger;");
+            sb.AppendLine("using NativePluginKit.Features.Logging;");
             sb.AppendLine();
             sb.AppendLine("namespace NativePluginKit.Generated");
             sb.AppendLine("{");
@@ -137,12 +137,12 @@ namespace NativePluginKit.SourceGenerators
                 if (isVoid)
                 {
                     sb.AppendLine($"            try {{ {m.CallPath}({callArgs}); }}");
-                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ExceptionFormatter.Format(ex)); }} catch {{ }} }}");
+                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(ex, \"export\"); }} catch {{ }} }}");
                 }
                 else
                 {
                     sb.AppendLine($"            try {{ return {m.CallPath}({callArgs}); }}");
-                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(\"[export] \" + ExceptionFormatter.Format(ex)); }} catch {{ }} return default; }}");
+                    sb.AppendLine($"            catch (Exception ex) {{ try {{ Log.PrintError(ex, \"export\"); }} catch {{ }} return default; }}");
                 }
                 sb.AppendLine("        }");
                 sb.AppendLine();

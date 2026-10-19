@@ -52,56 +52,6 @@ namespace NativePluginKit.Loader.Constants
         [HostApi("NativePluginKit.Loader", "PluginRegistry", "GetMethodPointer",
             typeof(GetPluginMethodDelegate), typeof(GetPluginMethodPublicDelegate))]
         public IntPtr PluginMethods_Get;
-
-        /// <summary>
-        /// Info 级别日志
-        /// </summary>
-        [HostApi("NativePluginKit.Features.Logger", "Log", "PrintLog",
-            typeof(PrintLogDelegate), typeof(PrintLogPublicDelegate))]
-        public IntPtr PrintLog;
-
-        /// <summary>
-        /// Warning 级别日志
-        /// </summary>
-        [HostApi("NativePluginKit.Features.Logger", "Log", "PrintWarning",
-            typeof(PrintLogDelegate), typeof(PrintLogPublicDelegate))]
-        public IntPtr PrintWarning;
-
-        /// <summary>
-        /// Error 级别日志
-        /// </summary>
-        [HostApi("NativePluginKit.Features.Logger", "Log", "PrintError",
-            typeof(PrintLogDelegate), typeof(PrintLogPublicDelegate))]
-        public IntPtr PrintError;
-
-        /// <summary>
-        /// Debug 级别日志
-        /// </summary>
-        [HostApi("NativePluginKit.Features.Logger", "Log", "Debug",
-            typeof(PrintLogDelegate), typeof(PrintLogPublicDelegate))]
-        public IntPtr LogDebug;
-
-        /// <summary>
-        /// 注册事件回调
-        /// </summary>
-        /// <param name="eventType">事件类型对应 <c>EventType</c> 的数值</param>
-        /// <param name="callback">回调函数指针签名为 <c>void(int, IntPtr, IntPtr)</c></param>
-        /// <param name="userData">用户自定义数据会原样传回回调</param>
-        /// <returns>注册成功返回 true</returns>
-        [HostApi("NativePluginKit.Events", "EventBus", "RegisterCallback",
-            typeof(RegisterEventDelegate), typeof(RegisterEventDelegate))]
-        public IntPtr RegisterEventCallback;
-
-        /// <summary>
-        /// 注销事件回调
-        /// </summary>
-        /// <param name="eventType">事件类型对应 <c>EventType</c> 的数值</param>
-        /// <param name="callback">回调函数指针</param>
-        /// <param name="userData">注册时传入的用户自定义数据</param>
-        /// <returns>取消成功返回 true</returns>
-        [HostApi("NativePluginKit.Events", "EventBus", "UnregisterCallback",
-            typeof(UnregisterEventDelegate), typeof(UnregisterEventDelegate))]
-        public IntPtr UnregisterEventCallback;
     }
 
     /// <summary>

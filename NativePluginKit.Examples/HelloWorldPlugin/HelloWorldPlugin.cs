@@ -6,7 +6,7 @@ using NativePluginKit.Features.Cards;
 using NativePluginKit.Features.Configs;
 using NativePluginKit.Features.Entities;
 using NativePluginKit.Features.Events;
-using NativePluginKit.Features.Logger;
+using NativePluginKit.Features.Logging;
 using NativePluginKit.Features.Story;
 using NativePluginKit.Features.Wrappers;
 using NativePluginKit.Loader.Plugins;

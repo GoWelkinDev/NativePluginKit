@@ -159,11 +159,6 @@ namespace NativePluginKit.SourceGenerators
             bool nativeRetIntPtr = nativeRet.SpecialType == SpecialType.System_IntPtr;
             bool nativeRetInt = nativeRet.SpecialType == SpecialType.System_Int32;
 
-            // 检测是否为 Logger 方法
-            bool isLoggerMethod =
-                f.Namespace == "NativePluginKit.Features.Logger" &&
-                f.ClassName == "Log";
-
             // 方法签名
             string retTypeStr = returnsVoid ? "void" : publicRet.ToDisplayString();
             var paramList = string.Join(", ", publicParams.Select(p =>
@@ -193,17 +188,7 @@ namespace NativePluginKit.SourceGenerators
                 {
                     string tmp = $"__p{i}";
                     tmpVars.Add(tmp);
-
-                    if (isLoggerMethod)
-                    {
-                        // Logger 方法自动加 [PluginName] 前缀
-                        sb.AppendLine($"            string __prefixed{i} = \"[\" + PluginContext.PluginName + \"] \" + {pub.Name};");
-                        sb.AppendLine($"            IntPtr {tmp} = Marshal.StringToCoTaskMemUTF8(__prefixed{i});");
-                    }
-                    else
-                    {
-                        sb.AppendLine($"            IntPtr {tmp} = Marshal.StringToCoTaskMemUTF8({pub.Name});");
-                    }
+                    sb.AppendLine($"            IntPtr {tmp} = Marshal.StringToCoTaskMemUTF8({pub.Name});");
                 }
             }
 

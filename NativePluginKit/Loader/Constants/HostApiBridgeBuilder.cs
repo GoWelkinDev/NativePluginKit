@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 GoWelkin Network
 // SPDX-License-Identifier: BSD-3-Clause
 
-using NativePluginKit.Events;
 using System.Runtime.InteropServices;
 
 namespace NativePluginKit.Loader.Constants
@@ -29,16 +28,6 @@ namespace NativePluginKit.Loader.Constants
         public delegate IntPtr GetPluginMethodDelegate(IntPtr pluginName, IntPtr methodName);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetPluginMethodPublicDelegate(string pluginName, string methodName);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void PrintLogDelegate(IntPtr messagePtr);
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void PrintLogPublicDelegate(string message);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate bool RegisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate bool UnregisterEventDelegate(int eventType, IntPtr callback, IntPtr userData);
 
         private static readonly List<Delegate> _keepAlive = new();
 
@@ -73,16 +62,6 @@ namespace NativePluginKit.Loader.Constants
                     PluginRegistry.Get(
                         Marshal.PtrToStringUTF8(namePtr) ?? "",
                         Marshal.PtrToStringUTF8(methodPtr) ?? "")),
-
-                PrintLog = Ptr<PrintLogDelegate>(api.PrintLog),
-                PrintWarning = Ptr<PrintLogDelegate>(api.PrintWarning),
-                PrintError = Ptr<PrintLogDelegate>(api.PrintError),
-                LogDebug = Ptr<PrintLogDelegate>(api.LogDebug),
-
-                RegisterEventCallback = Ptr<RegisterEventDelegate>(static (eventType, callback, userData) =>
-                    EventDispatcher.Register(eventType, callback, userData)),
-                UnregisterEventCallback = Ptr<UnregisterEventDelegate>(static (eventType, callback, userData) =>
-                    EventDispatcher.Unregister(eventType, callback, userData)),
             };
         }
     }

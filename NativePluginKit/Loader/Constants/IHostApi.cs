@@ -19,25 +19,5 @@ namespace NativePluginKit.Loader.Constants
         /// 释放由宿主分配的非托管 UTF-8 字符串
         /// </summary>
         void FreeString(IntPtr ptr) => Marshal.FreeCoTaskMem(ptr);
-
-        /// <summary>
-        /// 输出普通日志
-        /// </summary>
-        void PrintLog(IntPtr messagePtr) { }
-
-        /// <summary>
-        /// 输出警告日志
-        /// </summary>
-        void PrintWarning(IntPtr messagePtr) { }
-
-        /// <summary>
-        /// 输出错误日志
-        /// </summary>
-        void PrintError(IntPtr messagePtr) { }
-
-        /// <summary>
-        /// 输出调试日志
-        /// </summary>
-        void LogDebug(IntPtr messagePtr) { }
     }
 }
