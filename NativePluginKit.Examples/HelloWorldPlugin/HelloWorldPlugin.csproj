@@ -4,16 +4,26 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<PublishAot>true</PublishAot>
 		<PublishRelease>true</PublishRelease>
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>full</TrimMode>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<InvariantGlobalization>true</InvariantGlobalization>
+		<NativeLib>Shared</NativeLib>
 		<IlcExportUnmanagedEntrypoints>true</IlcExportUnmanagedEntrypoints>
 		<IlcOptimizationPreference>Size</IlcOptimizationPreference>
-		<NativeLib>Shared</NativeLib>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<HotReloadEnabled>true</HotReloadEnabled>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -23,6 +33,7 @@
 		<IlcScanReflection>false</IlcScanReflection>
 		<IlcDisableReflection>true</IlcDisableReflection>
 		<IlcTrimMetadata>true</IlcTrimMetadata>
+		<InvariantGlobalization>true</InvariantGlobalization>
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 		<DebuggerSupport>false</DebuggerSupport>
 		<DebugSymbols>false</DebugSymbols>
