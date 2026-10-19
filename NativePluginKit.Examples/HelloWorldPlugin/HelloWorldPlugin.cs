@@ -22,7 +22,7 @@ namespace HelloWorldPlugin
         public static string Name => "HelloWorldPlugin";
         public static string Description => "Exercises every NativePluginKit API.";
         public static string Author => "GoWelkinDev";
-        public static Version RequiredApiVersion => new(2, 0, 0);
+        public static Version RequiredApiVersion => new(3, 0, 0);
         public static Version Version => new(1, 0, 0);
 
         protected override void OnStart()
